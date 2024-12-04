@@ -1,5 +1,16 @@
 # OUI-Visualization
 
+- standardize to tkinter
+  - use a theme: [list](https://www.reddit.com/r/Python/comments/lps11c/how_to_make_tkinter_look_modern_how_to_use_themes/)
+- add Main Menu
+- Pri izdelavi kode bodite prosim pozorni na glavni razlog, zakaj zlagamo vse skupaj v isto aplikacijo: želimo imeti kodo dovolj transparentno in pregledno, da jo lahko kasnejši študenti morda še nadgrajujejo.
+- Program naj omogoča izris vseh spodnjih vizualizacij. V primeru, da katere ne morete prevesti mora za to obstajati tehten razlog.
+- Dodatno/opcijsko: Shranjevanje in uporaba programov je zelo raznolika. Če vidite možnost za oblikovno poenotenje in poenotenje branja vhodov je to smiselno dodati.
+- Dodatno/opcijsko: Nekateri algoritmi vsebujejo še logične napake. Če jih zaznate jih sporočite in odpravite.
+
+
+# Original projects
+
 ## Alpha Beta Pruning
 - uses tkinter
 - works
