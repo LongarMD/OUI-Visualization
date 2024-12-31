@@ -1,6 +1,6 @@
 from common.module import Module
 import tkinter.ttk as ttk
-from modules.module1 import Module1
+from modules.ab_pruning.ab_pruning import AB_Pruning
 
 
 class MainMenu(Module):
@@ -14,6 +14,6 @@ class MainMenu(Module):
     def draw(self) -> None:
         ttk.Button(
             self,
-            text=Module1.__label__,
-            command=Module1.show,
+            text=AB_Pruning.__label__,
+            command=AB_Pruning.show,
         ).pack(pady=10)

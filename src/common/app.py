@@ -2,7 +2,7 @@ import tkinter as tk
 import sv_ttk
 import darkdetect
 from modules.main_menu import MainMenu
-from modules.module1 import Module1
+from modules.ab_pruning.ab_pruning import AB_Pruning
 
 from common.module import Module
 
@@ -42,9 +42,6 @@ class App(tk.Tk):
             cls._instance = tk.Tk.__new__(cls)
             tk.Tk.__init__(cls._instance)
             cls._instance._init()
-
-            # set the app instance to the current instance
-            Module.app = cls._instance
         return cls._instance
 
     def __init__(self) -> None:
@@ -58,6 +55,7 @@ class App(tk.Tk):
         Sets up the window title, size, position, theme, and creates the menubar.
         This method is called only once when the singleton instance is created.
         """
+        Module.app = self
         self.title("OUI")
 
         window_width, window_height = DEFAULT_WINDOW_SIZE
@@ -100,7 +98,7 @@ class App(tk.Tk):
         modules_menu = tk.Menu(menubar, tearoff=False)
         modules_menu.add_command(label=MainMenu.__label__, command=MainMenu.show)
         modules_menu.add_separator()
-        modules_menu.add_command(label=Module1.__label__, command=Module1.show)
+        modules_menu.add_command(label=AB_Pruning.__label__, command=AB_Pruning.show)
         menubar.add_cascade(label="Modules", menu=modules_menu)
 
         # Create "Options" menu
