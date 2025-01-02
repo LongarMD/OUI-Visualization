@@ -33,123 +33,135 @@ class AB_Pruning(Module):
         self.create_widgets()
 
     def create_widgets(self):
-        self.widget_frame = tk.Frame(self)
+        self.widget_frame = ttk.Frame(self)
         self.widget_frame.pack(fill=tk.X)
 
         # tree structure input
-        self.tree_structure_label = tk.Label(
+        self.tree_structure_label = ttk.Label(
             self.widget_frame, text="Enter tree structure:", font=tkFont.Font(size=10)
         )
         self.tree_structure_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
         self.tree_structure = tk.StringVar()
 
-        self.tree_structure_input = tk.Entry(
+        self.tree_structure_input = ttk.Entry(
             self.widget_frame,
             textvariable=self.tree_structure,
             font=tkFont.Font(size=10),
             width=40,
         )
-        self.tree_structure_input.grid(row=0, column=1, padx=(0, 10), pady=10)
+        self.tree_structure_input.grid(
+            row=0, column=1, padx=(0, 10), pady=10, sticky=tk.EW
+        )
         # default value
         self.tree_structure_input.insert(tk.END, "2|2,2|2,2,2,2")
 
-        def_bg = self.tree_structure_input.cget("bg")
+        def_bg = self.tree_structure_input.cget("background")
         self.tree_structure.trace_add(
-            "write", lambda *args: self.tree_structure_input.config(bg=def_bg)
+            "write",
+            lambda *args: self.tree_structure_input.configure(background=def_bg),
         )
 
         # leaf values input
-        self.leaf_values_label = tk.Label(
+        self.leaf_values_label = ttk.Label(
             self.widget_frame, text="Enter leaf values:", font=tkFont.Font(size=10)
         )
         self.leaf_values_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=tk.W)
 
         self.leaf_values = tk.StringVar()
 
-        self.leaf_values_input = tk.Entry(
+        self.leaf_values_input = ttk.Entry(
             self.widget_frame,
             textvariable=self.leaf_values,
             font=tkFont.Font(size=10),
             width=40,
         )
-        self.leaf_values_input.grid(row=1, column=1, padx=(0, 10), pady=(0, 10))
+        self.leaf_values_input.grid(
+            row=1, column=1, padx=(0, 10), pady=(0, 10), sticky=tk.EW
+        )
         # default value
         self.leaf_values_input.insert(tk.END, "11,-20,12,-10,-12,-5,-6,2")
 
         self.leaf_values.trace_add(
-            "write", lambda *args: self.leaf_values_input.config(bg=def_bg)
+            "write", lambda *args: self.leaf_values_input.configure(background=def_bg)
         )
 
         # generate tree button
-        self.generate_tree_btn = tk.Button(
+        self.generate_tree_btn = ttk.Button(
             self.widget_frame,
             text="Generate tree",
             command=self.validate_input,
-            font=tkFont.Font(size=10),
         )
-        self.generate_tree_btn.grid(
-            row=0, column=2, padx=10, pady=10, sticky=tk.E + tk.W
-        )
+        self.generate_tree_btn.grid(row=0, column=2, padx=10, pady=10, sticky=tk.EW)
 
         # reset button
-        self.reset_btn = tk.Button(
+        self.reset_btn = ttk.Button(
             self.widget_frame,
             text="Reset current tree",
             command=self.prepare_simulator,
-            font=tkFont.Font(size=10),
         )
-        self.reset_btn.grid(row=1, column=2, padx=10, pady=(0, 10), sticky=tk.E + tk.W)
+        self.reset_btn.grid(row=1, column=2, padx=10, pady=(0, 10), sticky=tk.EW)
 
         # canvas
         self.canvas = MovableCanvas(self, bg="white")
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
-        # simulation controls
-        self.one_step_label = tk.Label(
-            self.widget_frame,
+        # simulation controls frame
+        sim_frame = ttk.Frame(self.widget_frame)
+        sim_frame.grid(
+            row=0,
+            column=3,
+            rowspan=2,
+            columnspan=3,
+            padx=(20, 10),
+            pady=10,
+            sticky=tk.NSEW,
+        )
+
+        self.one_step_label = ttk.Label(
+            sim_frame,
             text="One forward / backward step:",
             font=tkFont.Font(size=10),
         )
-        self.one_step_label.grid(row=0, column=3, padx=(20, 10), pady=10, sticky=tk.W)
-
-        self.backward_button = tk.Button(
-            self.widget_frame, text="<<", font=tkFont.Font(size=10)
+        self.one_step_label.grid(
+            row=0, column=0, columnspan=2, pady=(0, 5), sticky=tk.W
         )
-        self.backward_button.grid(row=0, column=4, pady=10, sticky=tk.E + tk.W)
 
-        self.forward_button = tk.Button(
-            self.widget_frame, text=">>", font=tkFont.Font(size=10)
-        )
-        self.forward_button.grid(row=0, column=5, pady=10, sticky=tk.E + tk.W)
+        self.backward_button = ttk.Button(sim_frame, text="<<")
+        self.backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
 
-        self.all_steps_label = tk.Label(
-            self.widget_frame,
+        self.forward_button = ttk.Button(sim_frame, text=">>")
+        self.forward_button.grid(row=1, column=1, sticky=tk.EW)
+
+        self.all_steps_label = ttk.Label(
+            sim_frame,
             text="All forward / backward steps:",
             font=tkFont.Font(size=10),
         )
         self.all_steps_label.grid(
-            row=1, column=3, padx=(20, 10), pady=(0, 10), sticky=tk.W
+            row=2, column=0, columnspan=2, pady=(10, 5), sticky=tk.W
         )
 
-        self.all_backward_button = tk.Button(
-            self.widget_frame, text="<<<", font=tkFont.Font(size=10)
-        )
-        self.all_backward_button.grid(row=1, column=4, pady=(0, 10), sticky=tk.E + tk.W)
+        self.all_backward_button = ttk.Button(sim_frame, text="<<<")
+        self.all_backward_button.grid(row=3, column=0, padx=(0, 5), sticky=tk.EW)
 
-        self.all_forward_button = tk.Button(
-            self.widget_frame, text=">>>", font=tkFont.Font(size=10)
-        )
-        self.all_forward_button.grid(row=1, column=5, pady=(0, 10), sticky=tk.E + tk.W)
+        self.all_forward_button = ttk.Button(sim_frame, text=">>>")
+        self.all_forward_button.grid(row=3, column=1, sticky=tk.EW)
 
         # instructions
-        self.instruction_btn = tk.Button(
+        self.instruction_btn = ttk.Button(
             self.widget_frame,
             text="Instructions",
             command=self.show_instructions,
-            font=tkFont.Font(size=10),
         )
-        self.instruction_btn.grid(row=0, column=6, padx=(50, 10))
+        self.instruction_btn.grid(
+            row=0, column=6, rowspan=2, padx=(50, 10), sticky=tk.NS
+        )
+
+        # Configure grid weights for resizing
+        self.widget_frame.columnconfigure(1, weight=1)
+        self.widget_frame.columnconfigure(3, weight=1)
+        sim_frame.columnconfigure((0, 1), weight=1)
 
     def validate_input(self):
         tree_structure_str = self.tree_structure.get()
@@ -234,14 +246,16 @@ class AB_Pruning(Module):
             "to view different parts of the tree. You can also use mouse-wheel for zooming."
         )
 
-        label = tk.Label(instruction, text=instruction_text, justify="left", pady=10)
+        label = ttk.Label(
+            instruction, text=instruction_text, justify="left", padding=10
+        )
         label.grid(row=0, column=0, pady=10, padx=10)
 
     def invalid_input(self, tree_str_valid):
         if not tree_str_valid:
-            self.tree_structure_input.config(bg="IndianRed1")
+            self.tree_structure_input.configure(style="Invalid.TEntry")
         else:
-            self.leaf_values_input.config(bg="IndianRed1")
+            self.leaf_values_input.configure(style="Invalid.TEntry")
 
     def prepare_simulator(self):
         if not self.tree_structure_lst or not self.leaf_values_lst:
