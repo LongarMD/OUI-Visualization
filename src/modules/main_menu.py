@@ -1,6 +1,10 @@
 from common.module import Module
 import tkinter.ttk as ttk
-from modules.ab_pruning.ab_pruning import AB_Pruning
+from modules.ab_pruning.module import AB_Pruning
+from modules.ao_star.module import AO_Star
+from typing import List, Type
+
+MODULES: List[Type[Module]] = [AB_Pruning, AO_Star]
 
 
 class MainMenu(Module):
@@ -12,8 +16,9 @@ class MainMenu(Module):
         self.draw()
 
     def draw(self) -> None:
-        ttk.Button(
-            self,
-            text=AB_Pruning.__label__,
-            command=AB_Pruning.show,
-        ).pack(pady=10)
+        for module in MODULES:
+            ttk.Button(
+                self,
+                text=module.__label__,
+                command=module.show,
+            ).pack(pady=10)

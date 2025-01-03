@@ -3,7 +3,7 @@ from tkinter import ttk
 import tkinter.font as tkFont
 from common.module import Module
 
-from modules.ab_pruning.ab_simulator import TreeNode, AlphaBetaSimulator
+from modules.ab_pruning.ab_pruning import TreeNode, AlphaBetaSimulator
 
 
 class MovableCanvas(tk.Canvas):

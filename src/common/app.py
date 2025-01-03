@@ -1,8 +1,10 @@
 import tkinter as tk
+from typing import List, Type
 import sv_ttk
 import darkdetect
-from modules.main_menu import MainMenu
-from modules.ab_pruning.ab_pruning import AB_Pruning
+from modules.ab_pruning.module import AB_Pruning
+from modules.ao_star.module import AO_Star
+from modules.main_menu import MainMenu, MODULES
 
 from common.module import Module
 
@@ -56,7 +58,7 @@ class App(tk.Tk):
         This method is called only once when the singleton instance is created.
         """
         Module.app = self
-        self.title("OUI")
+        self.title("Visualizations")
 
         self.iconphoto(True, tk.PhotoImage(file="assets/favicon.png"))
 
@@ -100,7 +102,8 @@ class App(tk.Tk):
         modules_menu = tk.Menu(menubar, tearoff=False)
         modules_menu.add_command(label=MainMenu.__label__, command=MainMenu.show)
         modules_menu.add_separator()
-        modules_menu.add_command(label=AB_Pruning.__label__, command=AB_Pruning.show)
+        for module in MODULES:
+            modules_menu.add_command(label=module.__label__, command=module.show)
         menubar.add_cascade(label="Modules", menu=modules_menu)
 
         # Create "Options" menu
