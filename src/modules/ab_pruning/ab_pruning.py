@@ -38,9 +38,8 @@ class AB_Pruning(Module):
 
         # tree structure input
         self.tree_structure_label = ttk.Label(
-            self.widget_frame, text="Enter tree structure:", font=tkFont.Font(size=10)
-        )
-        self.tree_structure_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+            self.widget_frame, text="Tree structure:", font=tkFont.Font(size=10)
+        ).grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
         self.tree_structure = tk.StringVar()
 
@@ -64,7 +63,7 @@ class AB_Pruning(Module):
 
         # leaf values input
         self.leaf_values_label = ttk.Label(
-            self.widget_frame, text="Enter leaf values:", font=tkFont.Font(size=10)
+            self.widget_frame, text="Leafs:", font=tkFont.Font(size=10)
         )
         self.leaf_values_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=tk.W)
 
@@ -89,18 +88,18 @@ class AB_Pruning(Module):
         # generate tree button
         self.generate_tree_btn = ttk.Button(
             self.widget_frame,
-            text="Generate tree",
+            text="Generate",
             command=self.validate_input,
         )
-        self.generate_tree_btn.grid(row=0, column=2, padx=10, pady=10, sticky=tk.EW)
+        self.generate_tree_btn.grid(row=0, column=2, padx=5, pady=10, sticky=tk.EW)
 
         # reset button
         self.reset_btn = ttk.Button(
             self.widget_frame,
-            text="Reset current tree",
+            text="Reset",
             command=self.prepare_simulator,
         )
-        self.reset_btn.grid(row=1, column=2, padx=10, pady=(0, 10), sticky=tk.EW)
+        self.reset_btn.grid(row=1, column=2, padx=5, pady=(0, 10), sticky=tk.EW)
 
         # canvas
         self.canvas = MovableCanvas(self, bg="white")
@@ -118,50 +117,32 @@ class AB_Pruning(Module):
             sticky=tk.NSEW,
         )
 
-        self.one_step_label = ttk.Label(
-            sim_frame,
-            text="One forward / backward step:",
-            font=tkFont.Font(size=10),
-        )
-        self.one_step_label.grid(
-            row=0, column=0, columnspan=2, pady=(0, 5), sticky=tk.W
-        )
-
-        self.backward_button = ttk.Button(sim_frame, text="<<")
-        self.backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
-
-        self.forward_button = ttk.Button(sim_frame, text=">>")
-        self.forward_button.grid(row=1, column=1, sticky=tk.EW)
-
-        self.all_steps_label = ttk.Label(
-            sim_frame,
-            text="All forward / backward steps:",
-            font=tkFont.Font(size=10),
-        )
-        self.all_steps_label.grid(
-            row=2, column=0, columnspan=2, pady=(10, 5), sticky=tk.W
-        )
-
-        self.all_backward_button = ttk.Button(sim_frame, text="<<<")
-        self.all_backward_button.grid(row=3, column=0, padx=(0, 5), sticky=tk.EW)
-
-        self.all_forward_button = ttk.Button(sim_frame, text=">>>")
-        self.all_forward_button.grid(row=3, column=1, sticky=tk.EW)
-
         # instructions
         self.instruction_btn = ttk.Button(
-            self.widget_frame,
+            sim_frame,
             text="Instructions",
             command=self.show_instructions,
         )
         self.instruction_btn.grid(
-            row=0, column=6, rowspan=2, padx=(50, 10), sticky=tk.NS
+            row=0, column=0, columnspan=4, sticky=tk.EW, pady=(0, 5)
         )
+
+        self.all_backward_button = ttk.Button(sim_frame, text="<<")
+        self.all_backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
+
+        self.backward_button = ttk.Button(sim_frame, text="<")
+        self.backward_button.grid(row=1, column=1, padx=(0, 5), sticky=tk.EW)
+
+        self.forward_button = ttk.Button(sim_frame, text=">")
+        self.forward_button.grid(row=1, column=2, padx=(0, 5), sticky=tk.EW)
+
+        self.all_forward_button = ttk.Button(sim_frame, text=">>")
+        self.all_forward_button.grid(row=1, column=3, sticky=tk.EW)
 
         # Configure grid weights for resizing
         self.widget_frame.columnconfigure(1, weight=1)
         self.widget_frame.columnconfigure(3, weight=1)
-        sim_frame.columnconfigure((0, 1), weight=1)
+        sim_frame.columnconfigure((0, 1, 2, 3), weight=1)
 
     def validate_input(self):
         tree_structure_str = self.tree_structure.get()
@@ -174,7 +155,7 @@ class AB_Pruning(Module):
         layers = tree_structure_str.split("|")
         expected_no_nodes = 1
 
-        for l, layer in enumerate(layers):
+        for _, layer in enumerate(layers):
             tree_structure_lst.append([])
             layer_degrees = layer.split(",")
             # degree counts from upper layers should match with current layer
@@ -206,7 +187,7 @@ class AB_Pruning(Module):
             except ValueError:
                 return False
 
-        for l, leaf in enumerate(leafs):
+        for _, leaf in enumerate(leafs):
             if not is_number(leaf):
                 is_valid = False
             else:

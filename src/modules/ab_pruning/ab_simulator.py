@@ -1,5 +1,19 @@
 class TreeNode:
+    """
+    A node in the alpha-beta pruning game tree.
+
+    Attributes:
+        is_max (bool): True if this is a maximizing node, False if minimizing
+        children (list): List of child TreeNode objects
+        value (float): Node's value, only set for leaf nodes initially
+        alpha (float): Best value maximizing player can guarantee from this node
+        beta (float): Best value minimizing player can guarantee from this node
+        prev_alpha (float): Previous alpha value, used for displaying equations
+        prev_beta (float): Previous beta value, used for displaying equations
+    """
+
     def __init__(self, is_max):
+        """Initialize a TreeNode with given player type."""
         self.is_max = is_max
         self.children = []
         self.value = None
@@ -9,9 +23,14 @@ class TreeNode:
         self.prev_beta = None
 
     def is_leaf(self):
+        """Return True if this is a leaf node (has no children)."""
         return len(self.children) == 0
 
     def set_value(self, oth):
+        """
+        Update this node's value based on child node's value.
+        Takes max of values for maximizing nodes, min for minimizing nodes.
+        """
         if self.value is not None:
             v1, v2 = self.value, oth.value
             self.value = max(v1, v2) if self.is_max else min(v1, v2)
@@ -19,6 +38,10 @@ class TreeNode:
             self.value = oth.value
 
     def alpha_beta_propagate_up(self, child):
+        """
+        Update alpha/beta values propagating up from child node.
+        Stores previous values for equation display.
+        """
         if self.is_max:
             self.prev_alpha = self.alpha
             self.prev_child_beta = child.value
@@ -29,6 +52,10 @@ class TreeNode:
             self.beta = min(self.beta, child.value)
 
     def alpha_beta_propagate_down(self, parent):
+        """
+        Update alpha/beta values propagating down from parent node.
+        For leaf nodes, sets alpha=value for max nodes and beta=value for min nodes.
+        """
         self.alpha = parent.alpha
         self.beta = parent.beta
 
@@ -39,12 +66,17 @@ class TreeNode:
                 self.beta = self.value
 
     def value_string(self):
+        """Return string representation of node's value, or empty string if None."""
         if self.value is not None:
             return str(int(self.value)) if self.value.is_integer() else str(self.value)
         else:
             return ""
 
     def alpha_beta_string(self, display_eq):
+        """
+        Return string showing alpha/beta values and equations.
+        If display_eq is True, shows full equation for value updates.
+        """
         if self.alpha is None or self.beta is None:
             return ""
 
@@ -65,8 +97,18 @@ class TreeNode:
 
         return f"\u03b1: {alpha_string}\n\u03b2: {beta_string}"
 
-    # creates TreeNode structure from the given structure and leaf values
+    @staticmethod
     def generate_tree(tree_structure_lst, leaf_values):
+        """
+        Create a game tree from structure list and leaf values.
+
+        Args:
+            tree_structure_lst: List of lists specifying number of children per node per level
+            leaf_values: List of values for leaf nodes
+
+        Returns:
+            Root node of generated tree
+        """
         root = TreeNode(True)
         prev_layer = [root]
 
@@ -85,8 +127,11 @@ class TreeNode:
 
         return root
 
-    # sets nodes positions (on canvas) recursively
     def set_position(self, curr_x, curr_y, margin_x, margin_y):
+        """
+        Recursively set x,y positions for drawing tree.
+        Returns rightmost x coordinate used.
+        """
         if self.is_leaf():
             self.x = curr_x
             self.y = curr_y
@@ -104,16 +149,16 @@ class TreeNode:
 
         return curr_x
 
-    # sets node positions to match the center of the canvas
     def center_node(self, offset_x, offset_y):
+        """Adjust node positions by given offsets to center tree."""
         self.x -= offset_x
         self.y -= offset_y
 
         for child in self.children:
             child.center_node(offset_x, offset_y)
 
-    # traverses the tree and returns sets of possible x and y
     def get_possible_coords(self, set_x, set_y):
+        """Collect all x,y coordinates used in tree into provided sets."""
         set_x.add(self.x)
         set_y.add(self.y)
 
@@ -122,7 +167,24 @@ class TreeNode:
 
 
 class AlphaBetaSimulator:
+    """
+    Simulator for stepping through alpha-beta pruning algorithm.
+
+    Maintains current state of algorithm execution and handles forward/backward steps.
+
+    Attributes:
+        app: Reference to GUI application
+        root_node: Root node of game tree
+        curr_node: Currently visited node
+        curr_path: Path from root to current node
+        over: True if algorithm has completed
+        next_child: Maps nodes to index of next unvisited child
+        action_stack: Stack of actions for backtracking
+        cutoffs: List of pruning cutoff locations
+    """
+
     def __init__(self, app, root_node):
+        """Initialize simulator with app reference and game tree root."""
         self.app = app
         self.root_node = root_node
 
@@ -140,6 +202,10 @@ class AlphaBetaSimulator:
         self.cutoffs = []
 
     def forward(self, draw=True):
+        """
+        Execute one forward step of alpha-beta algorithm.
+        Updates tree state and optionally redraws visualization.
+        """
         if self.over:
             return
 
@@ -245,6 +311,10 @@ class AlphaBetaSimulator:
             )
 
     def backward(self, draw=True):
+        """
+        Undo one step of alpha-beta algorithm.
+        Updates tree state and optionally redraws visualization.
+        """
         if len(self.action_stack) == 0:
             return
 
@@ -307,6 +377,7 @@ class AlphaBetaSimulator:
             )
 
     def all_backward(self):
+        """Undo all steps back to initial state."""
         while len(self.action_stack):
             self.backward(draw=False)
         self.app.draw_tree(
@@ -317,6 +388,7 @@ class AlphaBetaSimulator:
         )
 
     def all_forward(self):
+        """Execute all remaining steps to completion."""
         while not self.over:
             self.forward(draw=False)
         self.app.draw_tree(
