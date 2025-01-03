@@ -11,13 +11,17 @@ on game trees. It allows users to:
 The module uses tkinter for the GUI components and custom canvas rendering.
 """
 
-from typing import List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, List, Optional, Set, Tuple
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
 from common.module import Module
 
 from .ab_pruning import TreeNode, AlphaBetaSimulator
+
+
+if TYPE_CHECKING:
+    from common.app import App
 
 
 class MovableCanvas(tk.Canvas):
@@ -29,8 +33,8 @@ class MovableCanvas(tk.Canvas):
     - Zoomed using the mouse wheel
     """
 
-    def __init__(self, master: Optional[tk.Widget] = None, **kwargs) -> None:
-        tk.Canvas.__init__(self, master, **kwargs)
+    def __init__(self, parent: Optional[tk.Widget] = None, **kwargs) -> None:
+        tk.Canvas.__init__(self, parent, **kwargs)
         self.bind("<ButtonPress-1>", lambda ev: self.scan_mark(ev.x, ev.y))
         self.bind("<B1-Motion>", lambda ev: self.scan_dragto(ev.x, ev.y, gain=1))
         self.bind("<MouseWheel>", self.zoom)
@@ -61,8 +65,8 @@ class AB_Pruning(Module):
     tree_structure_lst: Optional[List[List[int]]] = None
     leaf_values_lst: Optional[List[float]] = None
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, app: "App") -> None:
+        super().__init__(app)
         self.create_widgets()
 
     def create_widgets(self):
@@ -89,9 +93,7 @@ class AB_Pruning(Module):
             font=tkFont.Font(size=10),
             width=40,
         )
-        self.tree_structure_input.grid(
-            row=0, column=1, padx=(0, 10), pady=10, sticky=tk.EW
-        )
+        self.tree_structure_input.grid(row=0, column=1, padx=(0, 10), pady=10, sticky=tk.EW)
         # default value
         self.tree_structure_input.insert(tk.END, "2|2,2|2,2,2,2")
 
@@ -102,9 +104,7 @@ class AB_Pruning(Module):
         )
 
         # leaf values input
-        self.leaf_values_label = ttk.Label(
-            self.widget_frame, text="Leafs:", font=tkFont.Font(size=10)
-        )
+        self.leaf_values_label = ttk.Label(self.widget_frame, text="Leafs:", font=tkFont.Font(size=10))
         self.leaf_values_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=tk.W)
 
         self.leaf_values = tk.StringVar()
@@ -115,15 +115,11 @@ class AB_Pruning(Module):
             font=tkFont.Font(size=10),
             width=40,
         )
-        self.leaf_values_input.grid(
-            row=1, column=1, padx=(0, 10), pady=(0, 10), sticky=tk.EW
-        )
+        self.leaf_values_input.grid(row=1, column=1, padx=(0, 10), pady=(0, 10), sticky=tk.EW)
         # default value
         self.leaf_values_input.insert(tk.END, "11,-20,12,-10,-12,-5,-6,2")
 
-        self.leaf_values.trace_add(
-            "write", lambda *args: self.leaf_values_input.configure(background=def_bg)
-        )
+        self.leaf_values.trace_add("write", lambda *args: self.leaf_values_input.configure(background=def_bg))
 
         # generate tree button
         self.generate_tree_btn = ttk.Button(
@@ -163,9 +159,7 @@ class AB_Pruning(Module):
             text="Instructions",
             command=self.show_instructions,
         )
-        self.instruction_btn.grid(
-            row=0, column=0, columnspan=4, sticky=tk.EW, pady=(0, 5)
-        )
+        self.instruction_btn.grid(row=0, column=0, columnspan=4, sticky=tk.EW, pady=(0, 5))
 
         self.all_backward_button = ttk.Button(sim_frame, text="<<")
         self.all_backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
@@ -287,9 +281,7 @@ class AB_Pruning(Module):
             "to view different parts of the tree. You can also use mouse-wheel for zooming."
         )
 
-        label = ttk.Label(
-            instruction, text=instruction_text, justify="left", padding=10
-        )
+        label = ttk.Label(instruction, text=instruction_text, justify="left", padding=10)
         label.grid(row=0, column=0, pady=10, padx=10)
 
     def invalid_input(self, tree_str_valid: bool) -> None:
@@ -406,9 +398,7 @@ class AB_Pruning(Module):
         """
         # connect node with parent
         if parent_x is not None and parent_y is not None:
-            self.canvas.create_line(
-                parent_x, parent_y, node.x, node.y, width=1, fill="black"
-            )
+            self.canvas.create_line(parent_x, parent_y, node.x, node.y, width=1, fill="black")
 
         # draw cutoff line
         if cutoff and parent_x is not None and parent_y is not None:
@@ -421,16 +411,10 @@ class AB_Pruning(Module):
                 if cutoff_pair[0] == node and cutoff_pair[1] <= i:
                     cutoff = True
 
-            self.draw_nodes(
-                child, radius, node.x, node.y, marked_node, cutoffs, cutoff, is_prop_up
-            )
+            self.draw_nodes(child, radius, node.x, node.y, marked_node, cutoffs, cutoff, is_prop_up)
 
         # draw node as triangle
-        color = (
-            "olivedrab1"
-            if node == marked_node
-            else ("light sky blue" if node.is_max else "IndianRed1")
-        )
+        color = "olivedrab1" if node == marked_node else ("light sky blue" if node.is_max else "IndianRed1")
         v_max = [
             node.x,
             node.y - 0.866 * radius,
@@ -472,9 +456,7 @@ class AB_Pruning(Module):
             fill=text_color,
         )
 
-    def draw_perpendicular_line(
-        self, x1: float, y1: float, x2: float, y2: float, length: float = 10
-    ) -> None:
+    def draw_perpendicular_line(self, x1: float, y1: float, x2: float, y2: float, length: float = 10) -> None:
         """
         Draws a perpendicular line to indicate pruning.
 

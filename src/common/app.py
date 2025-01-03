@@ -10,51 +10,28 @@ DEFAULT_WINDOW_SIZE = (800, 600)
 
 class App(tk.Tk):
     """
-    A singleton class representing the main application window.
+    The main application window class.
 
-    This class implements a singleton pattern to ensure only one instance of the application
-    exists. It handles the main window creation, positioning, theme management, and module
+    This class handles the main window creation, positioning, theme management, and module
     switching functionality.
 
     Attributes:
-        _instance (App | None): Singleton instance of the App class
         _current_module (Module | None): Currently displayed module
-
-    Class Methods:
-        __new__: Ensures singleton pattern implementation
 
     The window uses the system's theme (light/dark) by default and provides options to
     switch between themes via the Options menu.
     """
 
-    _instance: "App | None" = None
     _current_module: "Module | None" = None
 
-    def __new__(cls) -> "App":
-        """
-        Create a new instance of App if one doesn't exist, implementing the singleton pattern.
-
-        Returns:
-            App: The singleton instance of the App class
-        """
-        if cls._instance is None:
-            cls._instance = tk.Tk.__new__(cls)
-            tk.Tk.__init__(cls._instance)
-            cls._instance._init()
-        return cls._instance
-
     def __init__(self) -> None:
-        """Initialize the App instance. Empty due to singleton pattern implementation."""
-        pass
-
-    def _init(self) -> None:
         """
         Initialize the main application window.
 
         Sets up the window title, size, position, theme, and creates the menubar.
         This method is called only once when the singleton instance is created.
         """
-        Module.app = self
+        super().__init__()
         self.title("Visualizations")
 
         self.iconphoto(True, tk.PhotoImage(file="assets/favicon.png"))
@@ -68,6 +45,7 @@ class App(tk.Tk):
         sv_ttk.set_theme(darkdetect.theme())
 
         self._create_menubar()
+        self.show_module(MainMenu)
 
     def _center_window(self, window_width: int, window_height: int) -> None:
         """
@@ -97,10 +75,10 @@ class App(tk.Tk):
 
         # "Modules" menu
         modules_menu = tk.Menu(menubar, tearoff=False)
-        modules_menu.add_command(label=MainMenu.__label__, command=MainMenu.show)
+        modules_menu.add_command(label=MainMenu.__label__, command=lambda: self.show_module(MainMenu))
         modules_menu.add_separator()
         for module in MODULES:
-            modules_menu.add_command(label=module.__label__, command=module.show)
+            modules_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))
         menubar.add_cascade(label="Modules", menu=modules_menu)
 
         # Create "Options" menu
@@ -111,7 +89,7 @@ class App(tk.Tk):
 
         self.config(menu=menubar)
 
-    def _show_module(self, module_class: type["Module"]) -> None:
+    def show_module(self, module_class: type["Module"]) -> None:
         """
         Switch the currently displayed module.
 
@@ -123,7 +101,7 @@ class App(tk.Tk):
         if self._current_module:
             self._current_module.destroy()
 
-        module = module_class()
+        module = module_class(self)
         module.pack(fill="both", expand=True)
 
         self._current_module = module

@@ -12,12 +12,8 @@ class Module(tk.Frame):
     """Label of the module, used in the menu"""
 
     app: "App"
-    """Static reference to the App instance, set by the App when the module is initialized"""
+    """Reference to the App instance"""
 
-    def __init__(self) -> None:
+    def __init__(self, app: "App") -> None:
         super().__init__()
-
-    @classmethod
-    def show(cls) -> None:
-        """Show the module"""
-        cls.app._show_module(cls)
+        self.app = app
