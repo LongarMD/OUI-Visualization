@@ -1,9 +1,6 @@
 import tkinter as tk
-from typing import List, Type
-import sv_ttk
-import darkdetect
-from modules.ab_pruning.module import AB_Pruning
-from modules.ao_star.module import AO_Star
+import sv_ttk  # type: ignore
+import darkdetect  # type: ignore
 from modules.main_menu import MainMenu, MODULES
 
 from common.module import Module

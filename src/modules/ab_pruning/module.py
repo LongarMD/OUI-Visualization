@@ -1,19 +1,42 @@
+"""
+Alpha-Beta Pruning Visualization Module
+
+This module provides a graphical interface for visualizing the alpha-beta pruning algorithm
+on game trees. It allows users to:
+- Input and generate custom game trees with specified structure and leaf values
+- Visualize the tree structure with max/min nodes at alternating levels
+- Step through the alpha-beta pruning algorithm execution
+- Pan and zoom the visualization for large trees
+
+The module uses tkinter for the GUI components and custom canvas rendering.
+"""
+
+from typing import List, Optional, Set, Tuple
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
 from common.module import Module
 
-from modules.ab_pruning.ab_pruning import TreeNode, AlphaBetaSimulator
+from .ab_pruning import TreeNode, AlphaBetaSimulator
 
 
 class MovableCanvas(tk.Canvas):
-    def __init__(self, master=None, **kwargs):
+    """
+    Custom canvas widget that supports panning and zooming.
+
+    The canvas can be:
+    - Panned by clicking and dragging
+    - Zoomed using the mouse wheel
+    """
+
+    def __init__(self, master: Optional[tk.Widget] = None, **kwargs) -> None:
         tk.Canvas.__init__(self, master, **kwargs)
         self.bind("<ButtonPress-1>", lambda ev: self.scan_mark(ev.x, ev.y))
         self.bind("<B1-Motion>", lambda ev: self.scan_dragto(ev.x, ev.y, gain=1))
         self.bind("<MouseWheel>", self.zoom)
 
-    def zoom(self, ev):
+    def zoom(self, ev: tk.Event) -> None:
+        """Handles mouse wheel events to zoom the canvas content"""
         x = self.canvasx(ev.x)
         y = self.canvasx(ev.y)
         scale = 1.001**ev.delta
@@ -21,18 +44,35 @@ class MovableCanvas(tk.Canvas):
 
 
 class AB_Pruning(Module):
+    """
+    Main module class for the Alpha-Beta Pruning visualization.
+
+    Provides functionality to:
+    - Create and manage the GUI components
+    - Handle user input for tree structure and leaf values
+    - Validate input and generate the game tree
+    - Render the tree visualization
+    - Control the alpha-beta pruning simulation
+    """
+
     __label__ = "Alpha-beta pruning"
 
-    node_radius = 30
-    tree_structure_lst = None
-    leaf_values_lst = None
+    node_radius: int = 30
+    tree_structure_lst: Optional[List[List[int]]] = None
+    leaf_values_lst: Optional[List[float]] = None
 
     def __init__(self) -> None:
         super().__init__()
-
         self.create_widgets()
 
     def create_widgets(self):
+        """
+        Creates and arranges all GUI components including:
+        - Input fields for tree structure and leaf values
+        - Control buttons for tree generation and simulation
+        - Canvas for tree visualization
+        - Simulation control buttons
+        """
         self.widget_frame = ttk.Frame(self)
         self.widget_frame.pack(fill=tk.X)
 
@@ -144,16 +184,26 @@ class AB_Pruning(Module):
         self.widget_frame.columnconfigure(3, weight=1)
         sim_frame.columnconfigure((0, 1, 2, 3), weight=1)
 
-    def validate_input(self):
-        tree_structure_str = self.tree_structure.get()
-        leaf_values_str = self.leaf_values.get()
+    def validate_input(self) -> None:
+        """
+        Validates the user input for tree structure and leaf values.
 
-        is_valid = True
+        Checks:
+        - Tree structure format and node counts
+        - Leaf value format and count matching tree structure
+        - Numeric validity of inputs
+
+        Updates the visualization if valid, shows error indicators if invalid.
+        """
+        tree_structure_str: str = self.tree_structure.get()
+        leaf_values_str: str = self.leaf_values.get()
+
+        is_valid: bool = True
 
         # validate tree structure input
-        tree_structure_lst = []
+        tree_structure_lst: List[List[int]] = []
         layers = tree_structure_str.split("|")
-        expected_no_nodes = 1
+        expected_no_nodes: int = 1
 
         for _, layer in enumerate(layers):
             tree_structure_lst.append([])
@@ -181,6 +231,7 @@ class AB_Pruning(Module):
             is_valid = False
 
         def is_number(s):
+            """Helper function to check if a string represents a valid number"""
             try:
                 float(s)
                 return True
@@ -203,6 +254,15 @@ class AB_Pruning(Module):
             self.invalid_input(tree_str_valid)
 
     def show_instructions(self):
+        """
+        Displays a popup window with instructions on how to use the module.
+
+        Includes information about:
+        - Tree structure input format
+        - Leaf values input format
+        - Simulation controls
+        - Navigation tips for large trees
+        """
         instruction = tk.Toplevel(self.app)
         instruction.title("Program Instructions")
         # instruction.geometry("500x400")
@@ -232,13 +292,27 @@ class AB_Pruning(Module):
         )
         label.grid(row=0, column=0, pady=10, padx=10)
 
-    def invalid_input(self, tree_str_valid):
+    def invalid_input(self, tree_str_valid: bool) -> None:
+        """
+        Highlights invalid input fields with an error style.
+
+        Args:
+            tree_str_valid (bool): Whether the tree structure input is valid
+        """
         if not tree_str_valid:
             self.tree_structure_input.configure(style="Invalid.TEntry")
         else:
             self.leaf_values_input.configure(style="Invalid.TEntry")
 
     def prepare_simulator(self):
+        """
+        Prepares the simulation environment after valid input is provided.
+
+        - Generates the tree structure
+        - Positions nodes on the canvas
+        - Draws the initial tree state
+        - Sets up simulation controls
+        """
         if not self.tree_structure_lst or not self.leaf_values_lst:
             return
 
@@ -266,18 +340,30 @@ class AB_Pruning(Module):
         self.all_backward_button.config(command=alpha_beta_simulator.all_backward)
         self.all_forward_button.config(command=alpha_beta_simulator.all_forward)
 
-    # draws tree on canvas
     def draw_tree(
         self,
-        app_node,
-        radius,
-        parent_x=None,
-        parent_y=None,
-        marked_node=None,
-        cutoffs=None,
-        cutoff=False,
-        is_prop_up=None,
-    ):
+        app_node: "TreeNode",
+        radius: int,
+        parent_x: Optional[float] = None,
+        parent_y: Optional[float] = None,
+        marked_node: Optional["TreeNode"] = None,
+        cutoffs: Optional[List[Tuple["TreeNode", int]]] = None,
+        cutoff: bool = False,
+        is_prop_up: Optional[bool] = None,
+    ) -> None:
+        """
+        Draws the complete tree visualization on the canvas.
+
+        Args:
+            app_node: Root node of the tree
+            radius: Radius for drawing nodes
+            parent_x: X coordinate of parent node (None for root)
+            parent_y: Y coordinate of parent node (None for root)
+            marked_node: Currently highlighted node in simulation
+            cutoffs: List of nodes where pruning occurred
+            cutoff: Whether current branch is pruned
+            is_prop_up: Whether values are being propagated up the tree
+        """
         # clear canvas
         if parent_x is None and parent_y is None:
             self.canvas.delete("all")
@@ -294,18 +380,30 @@ class AB_Pruning(Module):
             is_prop_up,
         )
 
-    # draws nodes on canvas
     def draw_nodes(
         self,
-        node,
-        radius,
-        parent_x=None,
-        parent_y=None,
-        marked_node=None,
-        cutoffs=None,
-        cutoff=False,
-        is_prop_up=None,
-    ):
+        node: "TreeNode",
+        radius: int,
+        parent_x: Optional[float] = None,
+        parent_y: Optional[float] = None,
+        marked_node: Optional["TreeNode"] = None,
+        cutoffs: Optional[List[Tuple["TreeNode", int]]] = None,
+        cutoff: bool = False,
+        is_prop_up: Optional[bool] = None,
+    ) -> None:
+        """
+        Recursively draws nodes and connections in the tree.
+
+        Args:
+            node: Current node to draw
+            radius: Radius for drawing nodes
+            parent_x: X coordinate of parent node
+            parent_y: Y coordinate of parent node
+            marked_node: Currently highlighted node
+            cutoffs: List of pruning points
+            cutoff: Whether current branch is pruned
+            is_prop_up: Whether values are being propagated up
+        """
         # connect node with parent
         if parent_x is not None and parent_y is not None:
             self.canvas.create_line(
@@ -313,7 +411,7 @@ class AB_Pruning(Module):
             )
 
         # draw cutoff line
-        if cutoff:
+        if cutoff and parent_x is not None and parent_y is not None:
             self.draw_perpendicular_line(parent_x, parent_y, node.x, node.y)
 
         for i, child in enumerate(node.children):
@@ -374,7 +472,17 @@ class AB_Pruning(Module):
             fill=text_color,
         )
 
-    def draw_perpendicular_line(self, x1, y1, x2, y2, length=10):
+    def draw_perpendicular_line(
+        self, x1: float, y1: float, x2: float, y2: float, length: float = 10
+    ) -> None:
+        """
+        Draws a perpendicular line to indicate pruning.
+
+        Args:
+            x1, y1: Start coordinates of the original line
+            x2, y2: End coordinates of the original line
+            length: Length of the perpendicular line
+        """
         # direction of the original line
         dx = x2 - x1
         dy = y2 - y1
@@ -400,13 +508,18 @@ class AB_Pruning(Module):
         # draw perpendicular line
         self.canvas.create_line(perp_x1, perp_y1, perp_x2, perp_y2, width=4, fill="red")
 
-    # draws dotted separators between tree layers
-    def draw_separators(self, app_node):
-        padding = 75
-        text_padding = 60
+    def draw_separators(self, app_node: "TreeNode") -> None:
+        """
+        Draws horizontal separators between tree layers and labels them.
 
-        set_x = set()
-        set_y = set()
+        Args:
+            app_node: Root node of the tree
+        """
+        padding: int = 75
+        text_padding: int = 60
+
+        set_x: Set[float] = set()
+        set_y: Set[float] = set()
         app_node.get_possible_coords(set_x, set_y)
 
         min_x, max_x = min(set_x) - padding, max(set_x) + padding
