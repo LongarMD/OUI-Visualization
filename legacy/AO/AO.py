@@ -298,6 +298,7 @@ def print_tree(nodes_list):
     node2f = {}
     for node in nodes_list:
         print(f"{node.name}: {node.F}, ", end="")
+        print(type(node))
         node2f[node] = node.F
         if node.solved:
             solved_nodes.append(node)
@@ -315,20 +316,12 @@ def test_FG():
     try:
         F_value = int(F_entry.get())
         G_value = int(G_entry.get())
-        if (
-            0 <= F_value <= 100
-            or F_value == 1000
-            and 0 <= G_value <= 100
-            or G_value == 1000
-        ):  # 1000 == inf
+        if 0 <= F_value <= 100 or F_value == 1000 and 0 <= G_value <= 100 or G_value == 1000:  # 1000 == inf
             print(f"Valid F: {F_value}, and G: {G_value}")
             # check if entered F is correct
             if (
-                F_value == 1000
-                and nodes_list_iterations[iteration + 1][selected_node] == np.inf
-            ) or F_value == nodes_list_iterations[iteration + 1][
-                selected_node
-            ]:  # 1000 == inf
+                F_value == 1000 and nodes_list_iterations[iteration + 1][selected_node] == np.inf
+            ) or F_value == nodes_list_iterations[iteration + 1][selected_node]:  # 1000 == inf
                 F_entered = True
                 F_entry.configure(bg="lightgreen")
             else:
@@ -355,9 +348,7 @@ def test_FG():
     if F_entered and G_entered:
         nextstep.configure(state=tk.NORMAL)
         testFG.configure(state=tk.DISABLED)
-        status_text2.set(
-            "       correct F and G entered, press next step to continue       "
-        )
+        status_text2.set("       correct F and G entered, press next step to continue       ")
 
 
 def get_levels(graph):
@@ -386,9 +377,7 @@ def update_status():
     if node_entered:
         G_entry.configure(state=tk.NORMAL)
         F_entry.configure(state=tk.NORMAL)
-        status_text2.set(
-            "                     correct node selected, enter F and G                     "
-        )
+        status_text2.set("                     correct node selected, enter F and G                     ")
         status_label.configure(bg="lightgreen")
         status_label2.configure(bg="lightgreen")
         testFG.configure(state=tk.NORMAL)
@@ -635,17 +624,11 @@ def draw_tree(canvas):
     canvas.create_text(35, start_y, fill="black", text="Legend:")
     canvas.create_oval(20, start_y + 15, 35, start_y + 30, outline="black", fill="gray")
     canvas.create_text(85, start_y + 22, fill="black", text="- revealed nodes")
-    canvas.create_oval(
-        20, start_y + 35, 35, start_y + 50, outline="black", fill="black"
-    )
+    canvas.create_oval(20, start_y + 35, 35, start_y + 50, outline="black", fill="black")
     canvas.create_text(91, start_y + 42, fill="black", text="- developed nodes")
-    canvas.create_oval(
-        20, start_y + 55, 35, start_y + 70, outline="black", fill="goldenrod3"
-    )
+    canvas.create_oval(20, start_y + 55, 35, start_y + 70, outline="black", fill="goldenrod3")
     canvas.create_text(80, start_y + 62, fill="black", text="- solved nodes")
-    canvas.create_oval(
-        20, start_y + 75, 35, start_y + 90, outline="black", fill="lightgreen"
-    )
+    canvas.create_oval(20, start_y + 75, 35, start_y + 90, outline="black", fill="lightgreen")
     canvas.create_text(86, start_y + 82, fill="black", text="- solution nodes")
     # different starting trees
     canvas.create_text(window_width - 50, start_y, fill="black", text="Examples")
@@ -663,9 +646,7 @@ def draw_tree(canvas):
     graph_button = tk.Button(root, text="Starting graph", command=show_graph)
     canvas.create_window(window_width // 2, start_y, window=graph_button)
     # edit starting heuristics
-    heuristics_button = tk.Button(
-        root, text="Starting heuristics", command=show_heuristics
-    )
+    heuristics_button = tk.Button(root, text="Starting heuristics", command=show_heuristics)
     canvas.create_window(window_width // 2, 25, window=heuristics_button)
     canvas.create_line(5, 80, window_width - 5, 80, fill="gray")
     node_names = ""
@@ -711,9 +692,7 @@ def draw_tree(canvas):
     for node, pos in positions.items():
         x, y, node_type = pos
         # create nodes
-        canvas.create_oval(
-            x - node_size, y - node_size, x + node_size, y + node_size, outline="black"
-        )
+        canvas.create_oval(x - node_size, y - node_size, x + node_size, y + node_size, outline="black")
         # mark final nodes
         if node in final_nodes:
             canvas.create_oval(
@@ -756,9 +735,7 @@ def draw_tree(canvas):
     levels = {}
     last_y += 50
     canvas.create_line(5, last_y - 15, window_width - 5, last_y - 15, fill="gray")
-    canvas.create_text(
-        window_width // 2, last_y + 10, fill="black", text="Simulation graph"
-    )
+    canvas.create_text(window_width // 2, last_y + 10, fill="black", text="Simulation graph")
 
     # get levels
     for curr_node in current_nodes:
@@ -805,35 +782,23 @@ def draw_tree(canvas):
     for node, pos in positions.items():
         x, y = pos
         y += last_y
-        if (
-            node in solution_tree and iteration == num_iterations - 1
-        ):  # solution nodes are green
-            node_id = canvas.create_oval(
-                x - 10, y - 10, x + 10, y + 10, fill="lightgreen", outline="black"
-            )
+        if node in solution_tree and iteration == num_iterations - 1:  # solution nodes are green
+            node_id = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="lightgreen", outline="black")
             canvas.create_text(x, y, fill="black", text=node.name)
         elif node in nodes_solved[iteration]:  # solved nodes are yellow
-            node_id = canvas.create_oval(
-                x - 10, y - 10, x + 10, y + 10, fill="goldenrod3", outline="black"
-            )
+            node_id = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="goldenrod3", outline="black")
             canvas.create_text(x, y, fill="black", text=node.name)
         elif node in nodes_sequence[:iteration]:  # developed nodes are black
-            node_id = canvas.create_oval(
-                x - 10, y - 10, x + 10, y + 10, fill="black", outline="black"
-            )
+            node_id = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="black", outline="black")
             canvas.create_text(x, y, fill="white", text=node.name)
         else:  # revealed nodes are gray
-            node_id = canvas.create_oval(
-                x - 10, y - 10, x + 10, y + 10, fill="gray75", outline="black"
-            )
+            node_id = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="gray75", outline="black")
             canvas.create_text(x, y, fill="black", text=node.name)
         if node in nodes_sequence[:iteration] and node.type_:  # node type
             canvas.create_text(x, y + 20, fill="blue", text=node.type_)
         # show F values
         if node in nodes_list_iterations[iteration - 1]:
-            canvas.create_text(
-                x + 40, y, fill="black", text=f"F({node.name})={current_nodes[node]}"
-            )
+            canvas.create_text(x + 40, y, fill="black", text=f"F({node.name})={current_nodes[node]}")
         # save position for node id
         id2name[node_id] = node
 
@@ -845,22 +810,11 @@ def draw_tree(canvas):
     hint_button = tk.Button(root, text="Skip", command=next_step)
     canvas.create_window(25, 50, window=hint_button)
 
-    canvas.create_line(
-        5, window_height - 10, window_width - 5, window_height - 10, fill="gray"
-    )
+    canvas.create_line(5, window_height - 10, window_width - 5, window_height - 10, fill="gray")
 
 
 def next_step():
-    global \
-        iteration, \
-        num_iterations, \
-        node_entered, \
-        F_entry, \
-        G_entry, \
-        testFG, \
-        status_label, \
-        status_label2, \
-        status_text2
+    global iteration, num_iterations, node_entered, F_entry, G_entry, testFG, status_label, status_label2, status_text2
     iteration += 1
     if iteration < num_iterations:
         canvas.delete("all")
@@ -875,21 +829,15 @@ def next_step():
     testFG.configure(state=tk.DISABLED)
     status_label.configure(bg="tan1")
     status_label2.configure(bg="tan1")
-    status_text2.set(
-        "                   select the next node to be developed                     "
-    )
+    status_text2.set("                   select the next node to be developed                     ")
     if num_iterations <= iteration + 1:
         canvas.unbind("<Button-1>")
         status_label.configure(bg="lightblue")
         status_label2.configure(bg="lightblue")
         if nodes_list[0].solved:
-            status_text2.set(
-                "      algorithm finished, solution treen is marked in green       "
-            )
+            status_text2.set("      algorithm finished, solution treen is marked in green       ")
         else:
-            status_text2.set(
-                "                   algorithm finished, no solution found                    "
-            )
+            status_text2.set("                   algorithm finished, no solution found                    ")
 
 
 def display_help():
@@ -918,7 +866,7 @@ def main():
         window_width, \
         iteration, \
         num_iterations
-    update_H_graph()
+    # update_H_graph()
     ao_star()
 
     # F cost
@@ -947,17 +895,13 @@ def main():
 
     # current status
     status_text = tk.StringVar()
-    status_text.set(
-        "                                             STATUS:                                             "
-    )
+    status_text.set("                                             STATUS:                                             ")
     status_label = tk.Label(root, textvariable=status_text, bg="tan1")
     status_label.grid(column=2, row=1)
 
     # current status2
     status_text2 = tk.StringVar()
-    status_text2.set(
-        "             	select the first node to start the algorithm                "
-    )
+    status_text2.set("             	select the first node to start the algorithm                ")
     status_label2 = tk.Label(root, textvariable=status_text2, bg="tan1")
     status_label2.grid(column=2, row=2)
 
@@ -1007,9 +951,7 @@ def show_heuristics():
     if result:
         for res in result:
             if not (0 <= result[res] and result[res] <= 100):
-                msgbox.showerror(
-                    "Error", "Entered heuristics must be integers between 0 and 100"
-                )
+                msgbox.showerror("Error", "Entered heuristics must be integers between 0 and 100")
                 return
             start_H[res] = result[res]
         main()

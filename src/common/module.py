@@ -17,3 +17,11 @@ class Module(tk.Frame):
     def __init__(self, app: "App") -> None:
         super().__init__()
         self.app = app
+
+    @property
+    def window_width(self) -> int:
+        return self.app.winfo_width()
+
+    @property
+    def window_height(self) -> int:
+        return self.app.winfo_height()
