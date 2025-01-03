@@ -58,6 +58,8 @@ class App(tk.Tk):
         Module.app = self
         self.title("OUI")
 
+        self.iconphoto(True, tk.PhotoImage(file="assets/favicon.png"))
+
         window_width, window_height = DEFAULT_WINDOW_SIZE
         self.geometry(f"{window_width}x{window_height}")
         self.resizable(True, True)
