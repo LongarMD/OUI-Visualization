@@ -22,7 +22,7 @@
   - uses pygraphviz which "is notoriously difficult to install on a windows machine", has a windows version of the script without the dependency
   - outputs a lot of the information to the terminal
 
-- [ ] KNN
+- [x] KNN
 
   - uses tkinter
   - works
