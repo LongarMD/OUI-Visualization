@@ -1,11 +1,10 @@
 import tkinter as tk
 import sv_ttk  # type: ignore
-import darkdetect  # type: ignore
 from modules.main_menu import MainMenu, MODULES
 
 from common.module import Module
 
-DEFAULT_WINDOW_SIZE = (800, 600)
+DEFAULT_WINDOW_SIZE = (1000, 600)
 
 
 class App(tk.Tk):
@@ -42,7 +41,7 @@ class App(tk.Tk):
 
         self._center_window(window_width, window_height)
 
-        sv_ttk.set_theme(darkdetect.theme())
+        sv_ttk.set_theme("light")  # darkdetect.theme()
 
         self._create_menubar()
         self.show_module(MainMenu)
@@ -79,13 +78,13 @@ class App(tk.Tk):
         modules_menu.add_separator()
         for module in MODULES:
             modules_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))
-        menubar.add_cascade(label="Modules", menu=modules_menu)
+        menubar.add_cascade(label="Menu", menu=modules_menu)
 
         # Create "Options" menu
-        options_menu = tk.Menu(menubar, tearoff=False)
-        options_menu.add_command(label="Toggle Theme", command=sv_ttk.toggle_theme)
-        options_menu.add_command(label="Exit", command=self.quit)
-        menubar.add_cascade(label="Options", menu=options_menu)
+        # options_menu = tk.Menu(menubar, tearoff=False)
+        # options_menu.add_command(label="Toggle Theme", command=sv_ttk.toggle_theme)
+        # options_menu.add_command(label="Exit", command=self.quit)
+        # menubar.add_cascade(label="Options", menu=options_menu)
 
         self.config(menu=menubar)
 

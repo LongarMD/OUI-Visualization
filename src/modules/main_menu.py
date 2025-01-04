@@ -1,15 +1,17 @@
 from common.module import Module
 import tkinter.ttk as ttk
+from typing import TYPE_CHECKING, List, Type
+
 from modules.ab_pruning.module import AB_Pruning
 from modules.ao_star.module import AO_Star
-from typing import TYPE_CHECKING, List, Type
+from modules.d_separation.module import D_Separation
 
 
 if TYPE_CHECKING:
     from common.app import App
 
 
-MODULES: List[Type[Module]] = [AB_Pruning, AO_Star]
+MODULES: List[Type[Module]] = [AB_Pruning, AO_Star, D_Separation]
 
 
 class MainMenu(Module):

@@ -36,26 +36,34 @@ class AO_Star(Module):
         self.num_iterations = 1
 
     def draw(self):
-        F_label = ttk.Label(self, text="Enter F cost:")
+        # Create frames
+        canvas_frame = ttk.Frame(self)
+        canvas_frame.pack(fill=tk.BOTH, expand=True)
+
+        controls_frame = ttk.Frame(self)
+        controls_frame.pack(fill=tk.X)
+
+        # Controls frame widgets
+        F_label = ttk.Label(controls_frame, text="Enter F cost:")
         F_label.grid(column=3, row=1)
-        self.F_entry = ttk.Entry(self)
+        self.F_entry = ttk.Entry(controls_frame)
         self.F_entry.grid(column=4, row=1)
         self.F_entry.configure(state=tk.DISABLED)
 
         # G cost
-        G_label = ttk.Label(self, text="Enter G cost:")
+        G_label = ttk.Label(controls_frame, text="Enter G cost:")
         G_label.grid(column=3, row=2)
-        self.G_entry = ttk.Entry(self)
+        self.G_entry = ttk.Entry(controls_frame)
         self.G_entry.grid(column=4, row=2)
         self.G_entry.configure(state=tk.DISABLED)
 
         # submit F and G
-        self.testFG = ttk.Button(self, text="Submit")  # TODO:, command=test_FG)
+        self.testFG = ttk.Button(controls_frame, text="Submit")  # TODO:, command=test_FG)
         self.testFG.grid(column=4, row=3)
         self.testFG.configure(state=tk.DISABLED)
 
         # get next step
-        self.nextstep = ttk.Button(self, text="Next step")  # TODO:, command=next_step)
+        self.nextstep = ttk.Button(controls_frame, text="Next step")  # TODO:, command=next_step)
         self.nextstep.grid(column=2, row=3)
         self.nextstep.configure(state=tk.DISABLED)
 
@@ -64,18 +72,18 @@ class AO_Star(Module):
         self.status_text.set(
             "                                             STATUS:                                             "
         )
-        self.status_label = ttk.Label(self, textvariable=self.status_text, style="Status.TLabel")
+        self.status_label = ttk.Label(controls_frame, textvariable=self.status_text, style="Status.TLabel")
         self.status_label.grid(column=2, row=1)
 
         # current status2
         self.status_text2 = tk.StringVar()
         self.status_text2.set("             	select the first node to start the algorithm                ")
-        self.status_label2 = ttk.Label(self, textvariable=self.status_text2, style="Status.TLabel")
+        self.status_label2 = ttk.Label(controls_frame, textvariable=self.status_text2, style="Status.TLabel")
         self.status_label2.grid(column=2, row=2)
 
         # canvas for trees
-        self.canvas = tk.Canvas(self)
-        self.canvas.grid(row=0, column=0, columnspan=7)
+        self.canvas = tk.Canvas(canvas_frame)
+        self.canvas.pack(fill=tk.BOTH, expand=True)
         self.canvas.bind("<Button-1>", self._on_node_click)
 
         # draw the trees
@@ -133,16 +141,16 @@ class AO_Star(Module):
         positions = {}
         last_y = 0
         scale = 110
-        for l in levels:
-            y_offset = start_y + 30 + l * scale // 2
+        for lvl in levels:
+            y_offset = start_y + 30 + lvl * scale // 2
             if y_offset > last_y:
                 last_y = y_offset
-            level = levels[l]
+            level = levels[lvl]
             num_nodes = len(level)
             x_positions = [0]
             if num_nodes > 1:
-                step = (2 * l * scale) // (num_nodes - 1)
-                x_positions = np.arange(-l * scale, l * scale + 1, step)
+                step = (2 * lvl * scale) // (num_nodes - 1)
+                x_positions = np.arange(-lvl * scale, lvl * scale + 1, step)
             for ix, n in enumerate(level):
                 x = self.window_width // 2 + x_positions[ix]
                 y = y_offset
@@ -216,17 +224,17 @@ class AO_Star(Module):
 
         # GET POSITIONS
         positions = {}
-        for l in levels:
-            levels[l].sort(key=lambda node: node.parent.name if node.parent else "")
-            level = levels[l]
+        for lvl in levels:
+            levels[lvl].sort(key=lambda node: node.parent.name if node.parent else "")
+            level = levels[lvl]
             num_nodes = len(level)
             x_positions = [0]
             if num_nodes > 1:
-                step = (2 * l * scale) // (num_nodes - 1)
-                x_positions = np.arange(-l * scale, l * scale + 1, step)
+                step = (2 * lvl * scale) // (num_nodes - 1)
+                x_positions = np.arange(-lvl * scale, lvl * scale + 1, step)
             for ix, n in enumerate(level):
                 x = self.window_width // 2 + x_positions[ix]
-                y = 35 + l * 50
+                y = 35 + lvl * 50
                 positions[n] = (x, y)
 
         # DRAW EDGES WITH WEIGHTS
