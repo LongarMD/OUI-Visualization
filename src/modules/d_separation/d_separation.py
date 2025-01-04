@@ -1,5 +1,6 @@
 import itertools
 import networkx as nx
+import random
 
 BLUE = "#0020A1"
 GREEN = "#00FF00"
@@ -118,3 +119,33 @@ def find_d_separating_sets(nx_graph, node1, node2):
     E = {tuple(sorted(s)) for s in E}
     print("KONČNA REŠITEV: ", E, "\n")
     return E
+
+
+def get_random_adjacency_matrix():
+    """Generate a random adjacency matrix for the graph.
+
+    Returns:
+        str: A string representation of the random adjacency matrix
+    """
+
+    # Generate 4-7 nodes
+    num_nodes = random.randint(4, 7)
+    edges = []
+
+    # Ensure the graph is connected by adding a path through all nodes
+    for node in range(1, num_nodes):
+        parent = random.randint(0, node - 1)
+        edges.append((chr(ord("A") + parent), chr(ord("A") + node)))
+
+    # Add additional random edges with 0.4 probability
+    for node in range(1, num_nodes):
+        for potential_parent in range(node):
+            if random.random() < 0.4:
+                parent = chr(ord("A") + potential_parent)
+                child = chr(ord("A") + node)
+                edge = (parent, child)
+                if edge not in edges:  # Avoid duplicates
+                    edges.append(edge)
+
+    # Convert to adjacency matrix string format
+    return "\n".join(f"{parent} {child}" for parent, child in edges)
