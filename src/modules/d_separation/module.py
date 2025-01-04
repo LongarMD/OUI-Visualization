@@ -28,7 +28,6 @@ B E
 C E"""
 
 instructions = """# Instructions
-
 1. Graph Creation
    - Enter edges in the text box using the format: "A B" (one edge per line)
    - Each line represents a directed edge from node A to node B

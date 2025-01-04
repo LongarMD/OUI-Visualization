@@ -175,7 +175,7 @@ class App(tk.Tk):
         """Apply markdown-like styling to text content.
 
         Applies basic markdown formatting to text content in a tkinter Text widget:
-        - Headings (lines starting with #)
+        - Headings (lines starting with # or ##)
         - Bold text (wrapped in **)
         - Italic text (wrapped in _)
         - Horizontal line (---)
@@ -189,14 +189,16 @@ class App(tk.Tk):
         # Configure tags for styling
         text_widget.tag_configure("bold", font=(font[0], font[1], "bold"))
         text_widget.tag_configure("italic", font=(font[0], font[1], "italic"))
-        text_widget.tag_configure("heading", font=(font[0], font[1] + 3, "bold"))
+        text_widget.tag_configure("heading1", font=(font[0], font[1] + 3, "bold"))
+        text_widget.tag_configure("heading2", font=(font[0], font[1] + 1, "bold"))
         text_widget.tag_configure("hline", relief="sunken", borderwidth=0.5, font=("", 1))
 
         for line in content.split("\n"):
             # Handle headings
-            if line.startswith("# "):
-                text_widget.insert("end", line[2:] + "\n", "heading")
-                text_widget.insert("end", "\n")
+            if line.startswith("## "):
+                text_widget.insert("end", line[3:] + "\n", "heading2")
+            elif line.startswith("# "):
+                text_widget.insert("end", line[2:] + "\n", "heading1")
             # Handle bold text
             elif "**" in line:
                 parts = line.split("**")

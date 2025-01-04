@@ -1,5 +1,5 @@
 from common.module import Module
-from modules.ao_star.ao_star import AOStarSolver, GraphStructure, Node
+from modules.ao_star.ao_star import AOStarSolver, Node
 from typing import TYPE_CHECKING
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -11,16 +11,42 @@ from modules.ao_star.examples import get_example
 if TYPE_CHECKING:
     from common.app import App
 
-instructions = """# Instructions
+instructions = """# AO* Algorithm Simulator Instructions
 
-The AO* algorithm simulation includes a graph, starting heuristics table, and a status bar for guidance. To navigate the simulation:
+This simulator helps you understand the AO* algorithm through interactive exploration:
 
-1. Choose a node to develop.
-2. Input the node's F and G values, guided by provided cues.
-3. Confirm correct values to proceed, repeating the process.
-4. Completion is achieved when a solution tree is identified.
+## Interface Elements
+- Graph Display: Shows the current state of nodes and connections
+- Heuristics Table: Displays initial heuristic values for each node
+- Status Bar: Provides real-time guidance and feedback
+- Control Panel: Input fields for F and G values
 
-Nodes and heuristics can be adjusted using the respective buttons. The 'Skip' button allows progression without specific node selection or value entry. The value 1000 denotes infinity."""
+## How to Use
+1. Select a Node
+   - Click on an unexpanded node to develop it
+   - The simulator will confirm if you've chosen correctly
+
+2. Calculate and Enter Values
+   - F-value: Total estimated cost (G + H)
+   - G-value: Actual cost from start to current node
+   - Status bar will guide you if values are incorrect
+
+3. Progress Through the Algorithm
+   - Click 'Submit' to confirm your values
+   - Watch as the graph updates to show the node's development
+   - Solution paths will be highlighted in green
+
+## Additional Features
+- Example Graphs: Choose from 5 different preset graphs
+- Edit Options: Modify starting graph or heuristics
+- Skip Button: Automatically advance to next step
+- Node Colors:
+  • Gray: Revealed but unexpanded
+  • Black: Developed
+  • Yellow: Solved
+  • Green: Part of final solution
+
+Note: The value 1000 represents infinity in cost calculations."""
 
 
 class AO_Star(Module):

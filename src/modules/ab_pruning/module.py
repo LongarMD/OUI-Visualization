@@ -24,22 +24,39 @@ if TYPE_CHECKING:
     from common.app import App
 
 
-instruction_text = """# Generate Tree
-To create a tree, provide both the tree structure and leaf values.
+instruction_text = """## 1. Tree Structure
+
+Enter the structure using layers separated by '|' symbols:
+- First number: Children of the root node
+- Following groups: Children for each node in that layer
+- Example: '2|2,2' creates:
+  - Root with 2 children
+  - Each child has 2 children (4 leaves total)
+
+## 2. Leaf Values
+
+- Enter comma-separated numbers for the leaf nodes
+- Example: For '2|2,2' structure, enter 4 values:
+  '5,-3,2,8'
+- Decimals are allowed (e.g., -1.5, 3.14)
 ---
-# Tree Structure
-Define the number of children for nodes in each layer. For instance, use the format 'n|m1,m2,m3' where 'n' is the number of children for the app node, and 'm1,m2,m3' represent the number of children for the nodes in the next layer. Example: '3|3,3,3' signifies that the app node has 3 children, and each of those children has 3 children as well.
----
-# Leaf Values
-Input a list of numbers (possibly decimals) separated by commas. For the previously mentioned tree structure, an example would be: '-11,4,3,1.5,1,-5.3,7,-10,20'.
-Ensure that the input is semantically valid; otherwise, the tree cannot be generated.
----
-# Alpha Beta Pruning Simulation
-After generating a tree, simulate Alpha Beta pruning by clicking on the arrow buttons.
----
-# Handling Large Trees
-If the input generates a tree that is too large for the canvas, drag the tree around
-to view different parts of the tree. You can also use mouse-wheel for zooming."""
+## Simulation Controls
+
+← → Step backward/forward through the algorithm
+⟪ ⟫ Jump to start/end of simulation
+
+## Navigation
+
+- Drag: Pan the view
+- Mouse wheel: Zoom in/out
+- Reset: Return to initial state
+
+## Visual Elements
+
+- 🔺 MAX nodes (pointing up)
+- 🔻 MIN nodes (pointing down)
+- Red lines: Pruned branches
+- Numbers: Node values and α-β bounds"""
 
 
 class AB_Pruning(Module):
@@ -149,17 +166,17 @@ class AB_Pruning(Module):
             sticky="sew",
         )
 
-        self.all_backward_button = ttk.Button(sim_frame, text="<<")
+        self.all_backward_button = ttk.Button(sim_frame, text="⟪")
         self.all_backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
 
-        self.backward_button = ttk.Button(sim_frame, text="<")
+        self.all_forward_button = ttk.Button(sim_frame, text="⟫")
+        self.all_forward_button.grid(row=1, column=3, sticky=tk.EW)
+
+        self.backward_button = ttk.Button(sim_frame, text="←")
         self.backward_button.grid(row=1, column=1, padx=(0, 5), sticky=tk.EW)
 
-        self.forward_button = ttk.Button(sim_frame, text=">")
+        self.forward_button = ttk.Button(sim_frame, text="→")
         self.forward_button.grid(row=1, column=2, padx=(0, 5), sticky=tk.EW)
-
-        self.all_forward_button = ttk.Button(sim_frame, text=">>")
-        self.all_forward_button.grid(row=1, column=3, sticky=tk.EW)
 
         # Configure grid weights for resizing
         self.widget_frame.columnconfigure(1, weight=1)
