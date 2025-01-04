@@ -58,12 +58,16 @@ class TreeNode:
             return str(f)
 
         if self.is_max and display_eq:
-            alpha_string = f"max({to_string(self.prev_alpha)}, {to_string(self.prev_child_beta)}) = {to_string(self.alpha)}"
+            alpha_string = (
+                f"max({to_string(self.prev_alpha)}, {to_string(self.prev_child_beta)}) = {to_string(self.alpha)}"
+            )
         else:
             alpha_string = to_string(self.alpha)
 
         if not self.is_max and display_eq:
-            beta_string = f"min({to_string(self.prev_beta)}, {to_string(self.prev_child_alpha)}) = {to_string(self.beta)}"
+            beta_string = (
+                f"min({to_string(self.prev_beta)}, {to_string(self.prev_child_alpha)}) = {to_string(self.beta)}"
+            )
         else:
             beta_string = to_string(self.beta)
 
@@ -77,9 +81,7 @@ class TreeNode:
         for layer_degrees in tree_structure_lst:
             curr_layer = []
             for i, degree in enumerate(layer_degrees):
-                prev_layer[i].children = [
-                    TreeNode(not prev_layer[i].is_max) for d in range(degree)
-                ]
+                prev_layer[i].children = [TreeNode(not prev_layer[i].is_max) for d in range(degree)]
                 curr_layer.extend(prev_layer[i].children)
             prev_layer = curr_layer
 
@@ -171,9 +173,7 @@ class AlphaBetaSimulator:
                 self.curr_node.set_value(prev_node)
                 self.curr_node.alpha_beta_propagate_up(prev_node)
 
-                self.action_stack.append(
-                    ("MOVE_UP", prev_node, prev_value, prev_alpha, prev_beta, False)
-                )
+                self.action_stack.append(("MOVE_UP", prev_node, prev_value, prev_alpha, prev_beta, False))
 
             else:
                 # determine next child's index
@@ -199,9 +199,7 @@ class AlphaBetaSimulator:
                     # propagate alpha and beta
                     self.curr_node.alpha_beta_propagate_down(self.curr_path[-2])
 
-                    self.action_stack.append(
-                        ("MOVE_DOWN", self.curr_path[-2], prev_alpha, prev_beta)
-                    )
+                    self.action_stack.append(("MOVE_DOWN", self.curr_path[-2], prev_alpha, prev_beta))
 
                 else:
                     if self.curr_node == self.root_node:
@@ -237,9 +235,7 @@ class AlphaBetaSimulator:
                         )
 
         if draw:
-            is_prop_up = (
-                len(self.action_stack) > 0 and self.action_stack[-1][0] == "MOVE_UP"
-            )
+            is_prop_up = len(self.action_stack) > 0 and self.action_stack[-1][0] == "MOVE_UP"
             self.app.draw_tree(
                 self.root_node,
                 self.app.node_radius,
@@ -368,9 +364,7 @@ class App:
         self.widget_frame.pack(fill=tk.X)
 
         # tree structure input
-        self.tree_structure_label = tk.Label(
-            self.widget_frame, text="Enter tree structure:", font=tkFont.Font(size=10)
-        )
+        self.tree_structure_label = tk.Label(self.widget_frame, text="Enter tree structure:", font=tkFont.Font(size=10))
         self.tree_structure_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
 
         self.tree_structure = tk.StringVar()
@@ -386,14 +380,10 @@ class App:
         self.tree_structure_input.insert(tk.END, "2|2,2|2,2,2,2")
 
         def_bg = self.tree_structure_input.cget("bg")
-        self.tree_structure.trace_add(
-            "write", lambda *args: self.tree_structure_input.config(bg=def_bg)
-        )
+        self.tree_structure.trace_add("write", lambda *args: self.tree_structure_input.config(bg=def_bg))
 
         # leaf values input
-        self.leaf_values_label = tk.Label(
-            self.widget_frame, text="Enter leaf values:", font=tkFont.Font(size=10)
-        )
+        self.leaf_values_label = tk.Label(self.widget_frame, text="Enter leaf values:", font=tkFont.Font(size=10))
         self.leaf_values_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky=tk.W)
 
         self.leaf_values = tk.StringVar()
@@ -408,9 +398,7 @@ class App:
         # default value
         self.leaf_values_input.insert(tk.END, "11,-20,12,-10,-12,-5,-6,2")
 
-        self.leaf_values.trace_add(
-            "write", lambda *args: self.leaf_values_input.config(bg=def_bg)
-        )
+        self.leaf_values.trace_add("write", lambda *args: self.leaf_values_input.config(bg=def_bg))
 
         # generate tree button
         self.generate_tree_btn = tk.Button(
@@ -419,9 +407,7 @@ class App:
             command=self.validate_input,
             font=tkFont.Font(size=10),
         )
-        self.generate_tree_btn.grid(
-            row=0, column=2, padx=10, pady=10, sticky=tk.E + tk.W
-        )
+        self.generate_tree_btn.grid(row=0, column=2, padx=10, pady=10, sticky=tk.E + tk.W)
 
         # reset button
         self.reset_btn = tk.Button(
@@ -444,14 +430,10 @@ class App:
         )
         self.one_step_label.grid(row=0, column=3, padx=(20, 10), pady=10, sticky=tk.W)
 
-        self.backward_button = tk.Button(
-            self.widget_frame, text="<<", font=tkFont.Font(size=10)
-        )
+        self.backward_button = tk.Button(self.widget_frame, text="<<", font=tkFont.Font(size=10))
         self.backward_button.grid(row=0, column=4, pady=10, sticky=tk.E + tk.W)
 
-        self.forward_button = tk.Button(
-            self.widget_frame, text=">>", font=tkFont.Font(size=10)
-        )
+        self.forward_button = tk.Button(self.widget_frame, text=">>", font=tkFont.Font(size=10))
         self.forward_button.grid(row=0, column=5, pady=10, sticky=tk.E + tk.W)
 
         self.all_steps_label = tk.Label(
@@ -459,18 +441,12 @@ class App:
             text="All forward / backward steps:",
             font=tkFont.Font(size=10),
         )
-        self.all_steps_label.grid(
-            row=1, column=3, padx=(20, 10), pady=(0, 10), sticky=tk.W
-        )
+        self.all_steps_label.grid(row=1, column=3, padx=(20, 10), pady=(0, 10), sticky=tk.W)
 
-        self.all_backward_button = tk.Button(
-            self.widget_frame, text="<<<", font=tkFont.Font(size=10)
-        )
+        self.all_backward_button = tk.Button(self.widget_frame, text="<<<", font=tkFont.Font(size=10))
         self.all_backward_button.grid(row=1, column=4, pady=(0, 10), sticky=tk.E + tk.W)
 
-        self.all_forward_button = tk.Button(
-            self.widget_frame, text=">>>", font=tkFont.Font(size=10)
-        )
+        self.all_forward_button = tk.Button(self.widget_frame, text=">>>", font=tkFont.Font(size=10))
         self.all_forward_button.grid(row=1, column=5, pady=(0, 10), sticky=tk.E + tk.W)
 
         # instructions
@@ -578,9 +554,7 @@ class App:
         if not self.tree_structure_lst or not self.leaf_values_lst:
             return
 
-        root_node = TreeNode.generate_tree(
-            self.tree_structure_lst, self.leaf_values_lst
-        )
+        root_node = TreeNode.generate_tree(self.tree_structure_lst, self.leaf_values_lst)
 
         # fixed margin
         margin_x = 80
@@ -646,9 +620,7 @@ class App:
     ):
         # connect node with parent
         if parent_x is not None and parent_y is not None:
-            self.canvas.create_line(
-                parent_x, parent_y, node.x, node.y, width=1, fill="black"
-            )
+            self.canvas.create_line(parent_x, parent_y, node.x, node.y, width=1, fill="black")
 
         # draw cutoff line
         if cutoff:
@@ -661,16 +633,10 @@ class App:
                 if cutoff_pair[0] == node and cutoff_pair[1] <= i:
                     cutoff = True
 
-            self.draw_nodes(
-                child, radius, node.x, node.y, marked_node, cutoffs, cutoff, is_prop_up
-            )
+            self.draw_nodes(child, radius, node.x, node.y, marked_node, cutoffs, cutoff, is_prop_up)
 
         # draw node as triangle
-        color = (
-            "olivedrab1"
-            if node == marked_node
-            else ("light sky blue" if node.is_max else "IndianRed1")
-        )
+        color = "olivedrab1" if node == marked_node else ("light sky blue" if node.is_max else "IndianRed1")
         v_max = [
             node.x,
             node.y - 0.866 * radius,

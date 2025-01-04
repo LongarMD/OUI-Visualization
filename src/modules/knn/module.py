@@ -1,18 +1,21 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import tkinter.ttk as ttk
 import tkinter as tk
 import tkinter.messagebox as msgbox
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt  # type: ignore
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg  # type: ignore
 import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.decomposition import PCA
-import matplotlib.patches as patches
+from sklearn.datasets import load_iris  # type: ignore
+from sklearn.decomposition import PCA  # type: ignore
+import matplotlib.patches as patches  # type: ignore
 
 from common.module import Module
 
 if TYPE_CHECKING:
     from common.app import App
+    from matplotlib.figure import Figure
+    from matplotlib.axes import Axes
+    from matplotlib.collections import PathCollection
 
 instructions = """# K-Nearest Neighbors (KNN) Visualization
 
@@ -43,10 +46,10 @@ class KNN(Module):
     - Visualize nearest neighbors and classification results
     """
 
-    __label__ = "KNN"
-    __instructions__ = instructions
+    __label__: str = "KNN"
+    __instructions__: str = instructions
 
-    def __init__(self, app: "App"):
+    def __init__(self, app: "App") -> None:
         """Initialize the KNN module.
 
         Args:
@@ -54,16 +57,29 @@ class KNN(Module):
         """
         super().__init__(app)
 
+        self.data: np.ndarray
+        self.labels: np.ndarray
+        self.fig: "Figure"
+        self.ax: "Axes"
+        self.canvas: FigureCanvasTkAgg
+        self.canvas_widget: tk.Widget
+        self.point_entry: ttk.Entry
+        self.k_entry: ttk.Entry
+        self.classifier_choice: tk.StringVar
+        self.weighted_radio: ttk.Radiobutton
+        self.btn_next_step: ttk.Button
+        self.btn_clear: ttk.Button
+        self.prev_point_plot: Optional["PathCollection"] = None
+
         try:
             self._load_data()
         except FileNotFoundError:
             self._generate_data()
 
-        self.prev_point_plot = None
         self.create_widgets()
         self.visualize()
 
-    def _generate_data(self):
+    def _generate_data(self) -> None:
         """Generate the data for the module."""
         iris = load_iris()
         X, y = iris.data, iris.target
@@ -81,18 +97,18 @@ class KNN(Module):
         self.data = data
         self.labels = y
 
-    def _load_data(self):
+    def _load_data(self) -> None:
         """Load the data for the module."""
         self.data = np.loadtxt("assets/knn/iris_2d.txt")
         self.labels = np.loadtxt("assets/knn/iris_labels.txt")
 
-    def destroy(self):
+    def destroy(self) -> None:
         """Clean up resources when the module is destroyed."""
         plt.close()
         self.canvas_widget.destroy()
         super().destroy()
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         """Create and layout all the GUI widgets for the module."""
         self.fig, self.ax = plt.subplots(figsize=(12, 8))
         self.ax.set_xlim([0, 10])
@@ -153,7 +169,7 @@ class KNN(Module):
         self.btn_clear = ttk.Button(controls_frame, text="Clear", command=self.on_clear)
         self.btn_clear.grid(column=7, row=0, padx=(5, 0), pady=5)
 
-    def on_clear(self):
+    def on_clear(self) -> None:
         """Clear all inputs and reset the visualization."""
         self.point_entry.delete(0, tk.END)
         self.k_entry.delete(0, tk.END)
@@ -166,7 +182,7 @@ class KNN(Module):
 
         self.canvas.draw()
 
-    def on_click(self, event):
+    def on_click(self, event: plt.MouseEvent) -> None:
         """Handle mouse click events to place test points.
 
         Args:
@@ -188,7 +204,7 @@ class KNN(Module):
 
             self.prev_point_plot = point_plot
 
-    def on_show_knn(self):
+    def on_show_knn(self) -> None:
         """Process the KNN classification for the current test point and k value."""
         try:
             k = int(self.k_entry.get())
@@ -217,7 +233,7 @@ class KNN(Module):
 
         self.canvas.draw()
 
-    def classify_test_point(self, test_point, data, labels, k):
+    def classify_test_point(self, test_point: np.ndarray, data: np.ndarray, labels: np.ndarray, k: int) -> int:
         """Classify a test point using k-nearest neighbors.
 
         Args:
@@ -243,9 +259,15 @@ class KNN(Module):
             weighted_counts = np.bincount(k_nearest_labels, weights=weights)
             majority_class = np.argmax(weighted_counts)
 
-        return majority_class
+        return int(majority_class)
 
-    def visualize(self, showTestPoint=False, test_point=[], k=0, classified_class=None):
+    def visualize(
+        self,
+        showTestPoint: bool = False,
+        test_point: np.ndarray = np.array([]),
+        k: int = 0,
+        classified_class: Optional[int] = None,
+    ) -> None:
         """Visualize the data points and optionally show test point classification.
 
         Args:

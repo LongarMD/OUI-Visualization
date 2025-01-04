@@ -117,10 +117,7 @@ while not done:
                         if game.discs[i].is_clicked():
                             current_pos = game.discs[i].current_pos
                             pos_length = len(game.positions[current_pos].discs)
-                            if (
-                                game.discs[i]
-                                == game.positions[current_pos].discs[pos_length - 1]
-                            ):
+                            if game.discs[i] == game.positions[current_pos].discs[pos_length - 1]:
                                 disc_index = i
                                 last_pos = [game.discs[i].rect.x, game.discs[i].rect.y]
                                 move = True
@@ -128,12 +125,8 @@ while not done:
                     # game.start_positions = game.positions
                     start_positions = []
                     for i in range(len(game.positions)):
-                        pos = models.Position(
-                            i, game.PILLAR_COLOR, game.POS_WIDTH, game.POS_HEIGHT
-                        )
-                        pos.rect.x = (
-                            game.BOARD_X + game.POS_WIDTH * i + game.POS_SPACING * i
-                        )
+                        pos = models.Position(i, game.PILLAR_COLOR, game.POS_WIDTH, game.POS_HEIGHT)
+                        pos.rect.x = game.BOARD_X + game.POS_WIDTH * i + game.POS_SPACING * i
                         pos.rect.y = game.BOARD_Y - game.POS_HEIGHT
                         start_positions.append(pos)
                     # game.start_discs = game.discs
@@ -149,9 +142,7 @@ while not done:
                     for i in range(len(game.positions)):
                         pos = game.positions[i]
                         for disc in pos.discs:
-                            new_disc = [d for d in game.start_discs if d.id == disc.id][
-                                0
-                            ]
+                            new_disc = [d for d in game.start_discs if d.id == disc.id][0]
                             start_positions[i].discs.append(new_disc)
                     # start_positions[disc.current_pos].discs.append(disc)
                     game.start_positions = start_positions
@@ -225,9 +216,7 @@ while not done:
                 if not discs_chosen:
                     for i in range(0, len(menu.btn_discs)):
                         if menu.btn_discs[i].is_clicked():
-                            game = models.Game(
-                                SCREEN_WIDTH, SCREEN_HEIGHT, menu.btn_discs[i].value
-                            )
+                            game = models.Game(SCREEN_WIDTH, SCREEN_HEIGHT, menu.btn_discs[i].value)
                             discs_chosen = True
                             menu.choose_number_of_positions()
                             break
@@ -265,9 +254,7 @@ while not done:
     if algorithm_running:
         game_title = title_font.render("", True, color.BLACK)
     else:
-        game_title = title_font.render(
-            "Planiranje opravil s sredstvi in cilji", True, color.BLACK
-        )
+        game_title = title_font.render("Planiranje opravil s sredstvi in cilji", True, color.BLACK)
     screen.blit(game_title, [((SCREEN_WIDTH / 2) - (game_title.get_width() / 2)), 20])
     if init_game:
         if arranging_start:
@@ -291,21 +278,15 @@ while not done:
         if drag:
             if move:
                 pos = pygame.mouse.get_pos()
-                game.discs[disc_index].rect.x = pos[0] - (
-                    game.discs[disc_index].width / 2
-                )
-                game.discs[disc_index].rect.y = pos[1] - (
-                    game.discs[disc_index].height / 2
-                )
+                game.discs[disc_index].rect.x = pos[0] - (game.discs[disc_index].width / 2)
+                game.discs[disc_index].rect.y = pos[1] - (game.discs[disc_index].height / 2)
         elif drop:
             if move:
                 current_pos = game.discs[disc_index].current_pos
                 new_pos = None
                 change = False
                 turn_back = True
-                position = pygame.sprite.spritecollideany(
-                    game.discs[disc_index], game.pos_sprites_list
-                )
+                position = pygame.sprite.spritecollideany(game.discs[disc_index], game.pos_sprites_list)
                 if position != None:
                     new_pos = position.pos_index
                     if new_pos != current_pos:
@@ -319,18 +300,14 @@ while not done:
                     game.positions[new_pos].discs.append(game.discs[disc_index])
                     new_pos_length = len(game.positions[new_pos].discs)
                     game.discs[disc_index].rect.x = (
-                        game.positions[new_pos].rect.x
-                        - (game.DISC_WIDTH / 2)
-                        + game.POS_WIDTH / 2
+                        game.positions[new_pos].rect.x - (game.DISC_WIDTH / 2) + game.POS_WIDTH / 2
                     )
-                    game.discs[disc_index].rect.y = (
-                        game.BOARD_Y - game.DISC_HEIGHT
-                    ) - (game.DISC_HEIGHT * (new_pos_length - 1))
+                    game.discs[disc_index].rect.y = (game.BOARD_Y - game.DISC_HEIGHT) - (
+                        game.DISC_HEIGHT * (new_pos_length - 1)
+                    )
                     # Check if the game is over
                     if len(game.positions[2].discs) == game.number_of_discs:
-                        menu.sprites_list.add(
-                            [menu.btn_play_again, menu.btn_quit, menu.btn_return]
-                        )
+                        menu.sprites_list.add([menu.btn_play_again, menu.btn_quit, menu.btn_return])
                         menu.sprites_list.remove([menu.label, menu.btn_discs])
                 if turn_back:
                     game.discs[disc_index].rect.x = last_pos[0]

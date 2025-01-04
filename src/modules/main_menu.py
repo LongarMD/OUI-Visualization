@@ -29,5 +29,5 @@ class MainMenu(Module):
             ttk.Button(
                 self,
                 text=module.__label__,
-                command=lambda m=module: self.app.show_module(m),
+                command=lambda m=module: self.app.show_module(m),  # type: ignore
             ).pack(pady=10)

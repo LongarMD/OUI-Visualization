@@ -63,9 +63,7 @@ def highlight_sets_sequentially(sets, current_index=0, separated_nodes=None):
 
     # Schedule the next set to be highlighted
     next_index = (current_index + 1) % len(sets)
-    after_id = root.after(
-        2000, lambda: highlight_sets_sequentially(sets, next_index, separated_nodes)
-    )
+    after_id = root.after(2000, lambda: highlight_sets_sequentially(sets, next_index, separated_nodes))
 
 
 def draw_graph(d_separating_sets=None, separated_nodes=None):
@@ -110,13 +108,7 @@ def draw_graph(d_separating_sets=None, separated_nodes=None):
 
     if d_separating_sets is not None:
         d_separating_sets.sort(key=len)
-        textstr = (
-            "D-Separating Sets of "
-            + separated_nodes[0]
-            + " and "
-            + separated_nodes[1]
-            + ":\n"
-        )
+        textstr = "D-Separating Sets of " + separated_nodes[0] + " and " + separated_nodes[1] + ":\n"
         if len(d_separating_sets) == 0:
             textstr += "No D-Separating Sets\n"
         for i, s in enumerate(d_separating_sets):
@@ -179,10 +171,7 @@ def init_graph():
 
 
 def point_inside_circle(point, circle_center, radius):
-    return (
-        np.sqrt((point[0] - circle_center[0]) ** 2 + (point[1] - circle_center[1]) ** 2)
-        < radius
-    )
+    return np.sqrt((point[0] - circle_center[0]) ** 2 + (point[1] - circle_center[1]) ** 2) < radius
 
 
 def on_click(event):
@@ -220,9 +209,7 @@ def show_custom_messagebox(title, message, color):
     msg_label = tk.Label(msgbox, text=message, font=("Courier New", 12), bg=color)
     msg_label.pack(padx=20, pady=20)
 
-    close_button = tk.Button(
-        msgbox, text="Close", command=msgbox.destroy, bg="lightgrey"
-    )
+    close_button = tk.Button(msgbox, text="Close", command=msgbox.destroy, bg="lightgrey")
     close_button.pack(pady=10)
 
     # msgbox.eval('tk::PlaceWindow %s center' % msgbox.winfo_pathname(msgbox.winfo_id()))
@@ -306,9 +293,7 @@ def main():
     )
     btn_init_graph.pack(side="left", padx=5, pady=5, fill="x", expand=True)
 
-    btn_d_separation = tk.Button(
-        btn_frame, text="Check", command=check, font=font_style, bg=blue, fg=green
-    )
+    btn_d_separation = tk.Button(btn_frame, text="Check", command=check, font=font_style, bg=blue, fg=green)
     btn_d_separation.pack(side="left", padx=5, pady=5, fill="x", expand=True)
 
     fig, ax = plt.subplots(figsize=(8, 8))

@@ -86,12 +86,16 @@ class TreeNode:
             return str(f)
 
         if self.is_max and display_eq:
-            alpha_string = f"max({to_string(self.prev_alpha)}, {to_string(self.prev_child_beta)}) = {to_string(self.alpha)}"
+            alpha_string = (
+                f"max({to_string(self.prev_alpha)}, {to_string(self.prev_child_beta)}) = {to_string(self.alpha)}"
+            )
         else:
             alpha_string = to_string(self.alpha)
 
         if not self.is_max and display_eq:
-            beta_string = f"min({to_string(self.prev_beta)}, {to_string(self.prev_child_alpha)}) = {to_string(self.beta)}"
+            beta_string = (
+                f"min({to_string(self.prev_beta)}, {to_string(self.prev_child_alpha)}) = {to_string(self.beta)}"
+            )
         else:
             beta_string = to_string(self.beta)
 
@@ -115,9 +119,7 @@ class TreeNode:
         for layer_degrees in tree_structure_lst:
             curr_layer = []
             for i, degree in enumerate(layer_degrees):
-                prev_layer[i].children = [
-                    TreeNode(not prev_layer[i].is_max) for d in range(degree)
-                ]
+                prev_layer[i].children = [TreeNode(not prev_layer[i].is_max) for d in range(degree)]
                 curr_layer.extend(prev_layer[i].children)
             prev_layer = curr_layer
 
@@ -233,9 +235,7 @@ class AlphaBetaSimulator:
                 self.curr_node.set_value(prev_node)
                 self.curr_node.alpha_beta_propagate_up(prev_node)
 
-                self.action_stack.append(
-                    ("MOVE_UP", prev_node, prev_value, prev_alpha, prev_beta, False)
-                )
+                self.action_stack.append(("MOVE_UP", prev_node, prev_value, prev_alpha, prev_beta, False))
 
             else:
                 # determine next child's index
@@ -261,9 +261,7 @@ class AlphaBetaSimulator:
                     # propagate alpha and beta
                     self.curr_node.alpha_beta_propagate_down(self.curr_path[-2])
 
-                    self.action_stack.append(
-                        ("MOVE_DOWN", self.curr_path[-2], prev_alpha, prev_beta)
-                    )
+                    self.action_stack.append(("MOVE_DOWN", self.curr_path[-2], prev_alpha, prev_beta))
 
                 else:
                     if self.curr_node == self.root_node:
@@ -299,9 +297,7 @@ class AlphaBetaSimulator:
                         )
 
         if draw:
-            is_prop_up = (
-                len(self.action_stack) > 0 and self.action_stack[-1][0] == "MOVE_UP"
-            )
+            is_prop_up = len(self.action_stack) > 0 and self.action_stack[-1][0] == "MOVE_UP"
             self.app.draw_tree(
                 self.root_node,
                 self.app.node_radius,

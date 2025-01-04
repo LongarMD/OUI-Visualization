@@ -1,8 +1,8 @@
-from typing import Tuple, List
+from typing import Set, Tuple
 from .ao_star import GraphStructure, HeuristicValues, NodeName
 
 
-def get_example(n: int) -> Tuple[GraphStructure, HeuristicValues, List[NodeName]]:
+def get_example(n: int) -> Tuple[GraphStructure, HeuristicValues, Set[NodeName]]:
     match n:
         case 1:
             final_nodes = ["D", "I", "J", "K"]
@@ -195,4 +195,4 @@ def get_example(n: int) -> Tuple[GraphStructure, HeuristicValues, List[NodeName]
         case _:
             raise ValueError(f"Invalid example number: {n}")
 
-    return graph, H, final_nodes  # type: ignore
+    return graph, H, set(final_nodes)  # type: ignore

@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple, Any
 import numpy as np
 import tkinter as tk
 import tkinter.ttk as ttk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import networkx as nx
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg  # type: ignore
+import networkx as nx  # type: ignore
 import tkinter.messagebox as msgbox
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # type: ignore
 
 from common.module import Module
 from .d_separation import (
@@ -21,13 +21,13 @@ from .d_separation import (
 if TYPE_CHECKING:
     from common.app import App
 
-default_adjacency_matrix = """A B
+default_adjacency_matrix: str = """A B
 A C
 B D
 B E
 C E"""
 
-instructions = """# Instructions
+instructions: str = """# Instructions
 1. Graph Creation
    - Enter edges in the text box using the format: "A B" (one edge per line)
    - Each line represents a directed edge from node A to node B
@@ -54,11 +54,11 @@ Note: The graph must be acyclic (no cycles allowed). If you create a cyclic grap
 class D_Separation(Module):
     """A module for visualizing and finding d-separation sets in directed acyclic graphs."""
 
-    __label__ = "D-Separation"
-    __instructions__ = instructions
+    __label__: str = "D-Separation"
+    __instructions__: str = instructions
 
     after_id: str | None = None
-    G: DSeparationGraph | None = None
+    G: DSeparationGraph
 
     def __init__(self, app: "App"):
         """Initialize the D-Separation module.
@@ -66,56 +66,64 @@ class D_Separation(Module):
         Args:
             app: The main application instance
         """
-        self.after_id = None
+        self.after_id: Optional[str] = None
         super().__init__(app)
 
-        self.active_nodes = []
-        self.data = np.array([]).reshape(0, 2)
+        self.active_nodes: List[str] = []
+        self.data: np.ndarray = np.array([]).reshape(0, 2)
+        self.pos: Dict[str, Tuple[float, float]] = {}
+        self.fig: plt.Figure
+        self.ax: plt.Axes
+        self.canvas: FigureCanvasTkAgg
+        self.canvas_widget: tk.Widget
+        self.adj_matrix_input: tk.Text
 
         self.create_widgets()
         self.init_graph()
 
-    def destroy(self):
+    def destroy(self) -> None:
         """Clean up resources when the module is destroyed."""
         self.cancel_highlight()
         plt.close()
         self.canvas_widget.destroy()
         super().destroy()
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         """Create and layout all the GUI widgets for the module."""
         # Configure grid weights for the main module frame
         self.grid_rowconfigure(2, weight=1)  # Make the graph row expandable
         self.grid_columnconfigure(0, weight=1)  # Make the column expandable
 
-        font_style = ("Courier New", 14, "bold")
+        font_style: Tuple[str, int, str] = ("Courier New", 14, "bold")
 
         # Configure input frame
-        input_frame = ttk.Frame(self, padding=5)
+        input_frame: ttk.Frame = ttk.Frame(self, padding=5)
         input_frame.grid(row=0, column=0, sticky="nsew")  # Changed sticky to nsew
         input_frame.grid_columnconfigure(0, weight=1)  # Make the text widget expand horizontally
 
-        style = ttk.Style()
+        style: ttk.Style = ttk.Style()
         style.configure("Custom.TText", font=font_style)
         self.adj_matrix_input = tk.Text(input_frame, height=5, width=20, font=font_style)
         self.adj_matrix_input.pack(padx=5, pady=5, fill="both", expand=True)
         self.adj_matrix_input.insert(tk.END, default_adjacency_matrix)
 
         # Configure button frame
-        btn_frame = ttk.Frame(self, padding=5)
+        btn_frame: ttk.Frame = ttk.Frame(self, padding=5)
         btn_frame.grid(row=1, column=0, sticky="nsew")  # Changed sticky to nsew
         btn_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Give equal weight to all button columns
 
         # Update button configurations to use grid instead of pack
-        btn_init_graph = ttk.Button(btn_frame, text="Generate Graph", command=self.init_graph, style="Custom.TButton")
+        btn_init_graph: ttk.Button = ttk.Button(
+            btn_frame, text="Generate Graph", command=self.init_graph, style="Custom.TButton"
+        )
         btn_init_graph.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
-        btn_randomize = ttk.Button(
+        btn_randomize: ttk.Button = ttk.Button(
             btn_frame, text="Randomize", command=lambda: self.init_graph(randomize=True), style="Custom.TButton"
         )
         btn_randomize.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
-        btn_d_separation = ttk.Button(
+        btn_d_separation: ttk.Button = ttk.Button(
             btn_frame, text="Find D-separating Sets", command=self.d_separation, style="Custom.TButton"
         )
         btn_d_separation.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
@@ -129,7 +137,7 @@ class D_Separation(Module):
 
         self.canvas.mpl_connect("button_press_event", self.on_click)
 
-    def init_graph(self, randomize: bool = False):
+    def init_graph(self, randomize: bool = False) -> None:
         """Initialize the graph from the adjacency matrix input.
 
         Creates a new directed graph based on the user input and validates that it is acyclic.
@@ -139,22 +147,22 @@ class D_Separation(Module):
         # Stop highlighting
         self.cancel_highlight()
 
-        _G = DSeparationGraph()
+        _G: DSeparationGraph = DSeparationGraph()
 
         match randomize:
             case True:
-                adj_matrix_str = get_random_adjacency_matrix()
+                adj_matrix_str: str = get_random_adjacency_matrix()
                 self.adj_matrix_input.delete("1.0", tk.END)
                 self.adj_matrix_input.insert(tk.END, adj_matrix_str)
-                adj_matrix = self.parse_adjacency_input(adj_matrix_str)
+                adj_matrix: Dict[str, List[str]] = self.parse_adjacency_input(adj_matrix_str)
             case False:
-                input_text = self.adj_matrix_input.get("1.0", tk.END)
+                input_text: str = self.adj_matrix_input.get("1.0", tk.END)
                 if not self.validate_input(input_text):
                     msgbox.showerror("Invalid Input", "Please enter a valid adjacency matrix.")
                     return
                 adj_matrix = self.parse_adjacency_input(input_text)
 
-        unique_nodes = set()
+        unique_nodes: Set[str] = set()
         for from_node, to_nodes in adj_matrix.items():
             if from_node not in unique_nodes:
                 _G.add_node(from_node)
@@ -176,7 +184,7 @@ class D_Separation(Module):
         # Initial graph drawing
         self.draw_graph()
 
-    def validate_input(self, text):
+    def validate_input(self, text: str) -> bool:
         """Validate the adjacency matrix input text.
 
         Args:
@@ -185,12 +193,12 @@ class D_Separation(Module):
         Returns:
             bool: True if input is valid, False otherwise
         """
-        valid_chars = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ")
+        valid_chars: Set[str] = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ")
         for line in text.strip().split("\n"):
             if not set(line).issubset(valid_chars):
                 return False
 
-            parts = line.split()
+            parts: List[str] = line.split()
             if len(parts) != 2:
                 return False
 
@@ -200,7 +208,7 @@ class D_Separation(Module):
 
         return True
 
-    def parse_adjacency_input(self, input_text):
+    def parse_adjacency_input(self, input_text: str) -> Dict[str, List[str]]:
         """Parse the adjacency matrix input text into a dictionary representation.
 
         Args:
@@ -209,7 +217,7 @@ class D_Separation(Module):
         Returns:
             dict: Dictionary mapping source nodes to lists of target nodes
         """
-        adjacency_matrix = {}
+        adjacency_matrix: Dict[str, List[str]] = {}
         for line in input_text.strip().split("\n"):
             from_node, to_node = line.split()
             if from_node in adjacency_matrix:
@@ -218,7 +226,9 @@ class D_Separation(Module):
                 adjacency_matrix[from_node] = [to_node]
         return adjacency_matrix
 
-    def point_inside_circle(self, point, circle_center, radius):
+    def point_inside_circle(
+        self, point: Tuple[float, float], circle_center: Tuple[float, float], radius: float
+    ) -> bool:
         """Check if a point lies inside a circle.
 
         Args:
@@ -231,7 +241,7 @@ class D_Separation(Module):
         """
         return np.sqrt((point[0] - circle_center[0]) ** 2 + (point[1] - circle_center[1]) ** 2) < radius
 
-    def on_click(self, event):
+    def on_click(self, event: Any) -> None:
         """Handle mouse click events on the graph.
 
         Args:
@@ -260,24 +270,26 @@ class D_Separation(Module):
                 self.draw_graph()
                 break
 
-    def d_separation(self):
+    def d_separation(self) -> None:
         """Find and display d-separating sets for the selected nodes."""
         if len(self.active_nodes) != 2:
             msgbox.showerror("Error", "Please select exactly two nodes")
             return
 
         node1, node2 = self.active_nodes
-        E = find_d_separating_sets(self.G.graph, node1, node2)
+        E: Set[Tuple[str, ...]] = find_d_separating_sets(self.G.graph, node1, node2)
 
         self.highlight_sets_sequentially(list(E))
 
-    def cancel_highlight(self):
+    def cancel_highlight(self) -> None:
         """Cancel any ongoing highlighting animation."""
         if self.after_id:
             self.after_cancel(self.after_id)
             self.after_id = None
 
-    def highlight_sets_sequentially(self, sets, current_index=0, separated_nodes=None):
+    def highlight_sets_sequentially(
+        self, sets: List[Tuple[str, ...]], current_index: int = 0, separated_nodes: Optional[List[str]] = None
+    ) -> None:
         """Highlight d-separating sets one at a time in sequence.
 
         Args:
@@ -312,7 +324,9 @@ class D_Separation(Module):
         next_index = (current_index + 1) % len(sets)
         self.after_id = self.after(2000, lambda: self.highlight_sets_sequentially(sets, next_index, separated_nodes))
 
-    def draw_graph(self, d_separating_sets=None, separated_nodes=None):
+    def draw_graph(
+        self, d_separating_sets: Optional[List[Tuple[str, ...]]] = None, separated_nodes: Optional[List[str]] = None
+    ) -> None:
         """Draw the graph with current node colors and optional d-separation information.
 
         Args:
@@ -321,7 +335,7 @@ class D_Separation(Module):
         """
         self.ax.clear()
 
-        node_colors = self.G.get_node_colors()
+        node_colors: List[str] = self.G.get_node_colors()
 
         # Draw the graph using the node colors
         nx.draw(
@@ -358,15 +372,15 @@ class D_Separation(Module):
 
         if d_separating_sets is not None:
             d_separating_sets.sort(key=len)
-            textstr = "D-Separating Sets of " + separated_nodes[0] + " and " + separated_nodes[1] + ":\n"
+            textstr: str = "D-Separating Sets of " + separated_nodes[0] + " and " + separated_nodes[1] + ":\n"
             if len(d_separating_sets) == 0:
                 textstr += "No D-Separating Sets\n"
             for _, s in enumerate(d_separating_sets):
-                if s == set():
+                if s == tuple():
                     textstr += "∅\n"
                 textstr += "{" + ", ".join(s) + "}\n"
 
-            props = dict(boxstyle="square", facecolor=YELLOW, alpha=0.5)
+            props: Dict[str, Any] = dict(boxstyle="square", facecolor=YELLOW, alpha=0.5)
             self.ax.text(
                 0.05,
                 0.95,

@@ -65,9 +65,7 @@ def highlight_sets_sequentially(sets, current_index=0, separated_nodes=None):
 
     # Schedule the next set to be highlighted
     next_index = (current_index + 1) % len(sets)
-    after_id = root.after(
-        2000, lambda: highlight_sets_sequentially(sets, next_index, separated_nodes)
-    )
+    after_id = root.after(2000, lambda: highlight_sets_sequentially(sets, next_index, separated_nodes))
 
 
 def draw_graph(d_separating_sets=None, separated_nodes=None):
@@ -112,13 +110,7 @@ def draw_graph(d_separating_sets=None, separated_nodes=None):
 
     if d_separating_sets is not None:
         d_separating_sets.sort(key=len)
-        textstr = (
-            "D-Separating Sets of "
-            + separated_nodes[0]
-            + " and "
-            + separated_nodes[1]
-            + ":\n"
-        )
+        textstr = "D-Separating Sets of " + separated_nodes[0] + " and " + separated_nodes[1] + ":\n"
         if len(d_separating_sets) == 0:
             textstr += "No D-Separating Sets\n"
         for i, s in enumerate(d_separating_sets):
@@ -184,10 +176,7 @@ def init_graph():
 
 
 def point_inside_circle(point, circle_center, radius):
-    return (
-        np.sqrt((point[0] - circle_center[0]) ** 2 + (point[1] - circle_center[1]) ** 2)
-        < radius
-    )
+    return np.sqrt((point[0] - circle_center[0]) ** 2 + (point[1] - circle_center[1]) ** 2) < radius
 
 
 def on_click(event):
@@ -285,9 +274,7 @@ def find_d_separating_sets(nx_graph, node1, node2):
             if node_type in ["divergent", "serial"]:
                 S_X = get_subsets_including_node(all_nodes, node)
             elif node_type == "convergent":
-                S_X = get_subsets_excluding_node_and_descendants(
-                    all_nodes, node, descendants
-                )
+                S_X = get_subsets_excluding_node_and_descendants(all_nodes, node, descendants)
             else:
                 print("burek")
                 continue
@@ -375,9 +362,7 @@ def main():
     input_frame = tk.Frame(root, padx=5, pady=5, bg=bg_color)
     input_frame.grid(row=0, column=0, sticky="ew")
 
-    adj_matrix_input = tk.Text(
-        input_frame, height=5, width=20, font=font_style, bg=blue, fg=green
-    )
+    adj_matrix_input = tk.Text(input_frame, height=5, width=20, font=font_style, bg=blue, fg=green)
     adj_matrix_input.pack(padx=5, pady=5, fill="both", expand=True)
     adj_matrix_input.insert(tk.END, default_adjacency_matrix)
 

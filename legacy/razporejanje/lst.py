@@ -51,20 +51,14 @@ class Planer:
     def dodaj_aktivnost(self, aktivnost):
         # Preveri, ali aktivnost z istim ID-jem že obstaja
         if any(a.id == aktivnost.id for a in self.aktivnosti):
-            msgbox.showerror(
-                "Error", "Aktivnost z ID-jem {} že obstaja".format(aktivnost.id)
-            )
+            msgbox.showerror("Error", "Aktivnost z ID-jem {} že obstaja".format(aktivnost.id))
             return
 
         if not aktivnost.odvisnosti:
             aktivnost.odvisnosti = np.array(["start"])
 
         # Preveri, ali vse navedene odvisnosti obstajajo
-        neobstojece_odvisnosti = [
-            odv
-            for odv in aktivnost.odvisnosti
-            if not any(a.id == odv for a in self.aktivnosti)
-        ]
+        neobstojece_odvisnosti = [odv for odv in aktivnost.odvisnosti if not any(a.id == odv for a in self.aktivnosti)]
         if neobstojece_odvisnosti:
             msgbox.showerror(
                 "Error",
@@ -100,9 +94,7 @@ class Planer:
             seznam_vseh_odvisnih.extend(a.odvisnosti)
             seznam_vseh_odvisnih = list(set(seznam_vseh_odvisnih))
 
-        seznam_neodvisnih = [
-            a.id for a in self.aktivnosti if a.id not in seznam_vseh_odvisnih
-        ]
+        seznam_neodvisnih = [a.id for a in self.aktivnosti if a.id not in seznam_vseh_odvisnih]
         for a in self.aktivnosti:
             if a.id == "finish":
                 a.odvisnosti = seznam_neodvisnih
@@ -126,8 +118,7 @@ class Planer:
                 es_values[aktivnost_id] = 0
             else:
                 max_es = max(
-                    calculate_es(dep)
-                    + next(a for a in self.aktivnosti if a.id == dep).trajanje
+                    calculate_es(dep) + next(a for a in self.aktivnosti if a.id == dep).trajanje
                     for dep in aktivnost.odvisnosti
                 )
                 es_values[aktivnost_id] = max_es
@@ -146,9 +137,7 @@ class Planer:
         total_project_duration = max(
             a.es for a in self.aktivnosti
         )  # Assuming 'finish' activity represents the project end
-        ls_values = {
-            "finish": total_project_duration
-        }  # Initialize LS for 'finish' activity
+        ls_values = {"finish": total_project_duration}  # Initialize LS for 'finish' activity
 
         # Function to recursively calculate LS
         def calculate_ls(aktivnost_id):
@@ -159,16 +148,11 @@ class Planer:
             if aktivnost is None:
                 return total_project_duration
 
-            dependent_activities = [
-                a for a in self.aktivnosti if aktivnost_id in a.odvisnosti
-            ]
+            dependent_activities = [a for a in self.aktivnosti if aktivnost_id in a.odvisnosti]
             if not dependent_activities:
                 ls_values[aktivnost_id] = total_project_duration - aktivnost.trajanje
             else:
-                min_ls = min(
-                    calculate_ls(dep.id) - aktivnost.trajanje
-                    for dep in dependent_activities
-                )
+                min_ls = min(calculate_ls(dep.id) - aktivnost.trajanje for dep in dependent_activities)
                 ls_values[aktivnost_id] = min_ls
 
             return ls_values[aktivnost_id]
@@ -195,8 +179,7 @@ class Planer:
                 aktivnost.es = 0
             else:
                 max_es = max(
-                    update_es(dep)
-                    + next(a for a in self.aktivnosti if a.id == dep).trajanje
+                    update_es(dep) + next(a for a in self.aktivnosti if a.id == dep).trajanje
                     for dep in aktivnost.odvisnosti
                 )
                 aktivnost.es = max_es
@@ -214,15 +197,11 @@ class Planer:
             if aktivnost.finished:
                 return aktivnost.ls
 
-            dependent_activities = [
-                a for a in self.aktivnosti if aktivnost.id in a.odvisnosti
-            ]
+            dependent_activities = [a for a in self.aktivnosti if aktivnost.id in a.odvisnosti]
             if not dependent_activities:
                 aktivnost.ls = max(a.ls for a in self.aktivnosti) - aktivnost.trajanje
             else:
-                min_ls = min(
-                    update_ls(dep) - aktivnost.trajanje for dep in dependent_activities
-                )
+                min_ls = min(update_ls(dep) - aktivnost.trajanje for dep in dependent_activities)
                 aktivnost.ls = min_ls
 
             return aktivnost.ls
@@ -237,9 +216,7 @@ class Planer:
     def prestej_odvisnosti_od_starta(self):
         start_dependets = [a.id for a in self.aktivnosti if "start" in a.odvisnosti]
         dependent_count = len(start_dependets)
-        y_positions = [
-            15 * i for i in range(-dependent_count // 2 + 1, dependent_count // 2 + 1)
-        ]
+        y_positions = [15 * i for i in range(-dependent_count // 2 + 1, dependent_count // 2 + 1)]
         return start_dependets, dependent_count, y_positions
 
     def prikazi_urnik(self, ax, canvas):
@@ -252,9 +229,7 @@ class Planer:
         positions = {}
         used_positions = set()
         # Preštejmo koliko aktivnosti je odvisnih od začetne aktivnosti
-        start_dependents, dependent_count, start_dependets_y_positions = (
-            self.prestej_odvisnosti_od_starta()
-        )
+        start_dependents, dependent_count, start_dependets_y_positions = self.prestej_odvisnosti_od_starta()
 
         # Calculate positions of other activities
         for i, aktivnost in enumerate(self.aktivnosti):
@@ -263,9 +238,7 @@ class Planer:
                 y = start_y
 
             elif aktivnost.id == "finish":
-                x = (
-                    max(positions.values(), key=lambda x: x[0])[0] + rect_width * 1.5
-                )  # finish je vedno najbolj desno
+                x = max(positions.values(), key=lambda x: x[0])[0] + rect_width * 1.5  # finish je vedno najbolj desno
                 y = start_y
 
             else:
@@ -276,10 +249,7 @@ class Planer:
                     y = start_dependets_y_positions[y_index]
                     x = start_x + rect_width * 1.5
                 else:
-                    x = max(
-                        positions[odvisnost][0] + rect_width * 1.5
-                        for odvisnost in aktivnost.odvisnosti
-                    )
+                    x = max(positions[odvisnost][0] + rect_width * 1.5 for odvisnost in aktivnost.odvisnosti)
                     y = None
 
                     # try to align with one of the dependencies
@@ -342,15 +312,7 @@ class Planer:
 
 
 def dodaj_aktivnost():
-    global \
-        id_entry, \
-        trajanje_entry, \
-        odvisnosti_entry, \
-        resursi_entry, \
-        planer, \
-        ax, \
-        canvas, \
-        listbox_activities
+    global id_entry, trajanje_entry, odvisnosti_entry, resursi_entry, planer, ax, canvas, listbox_activities
     try:
         id_aktivnosti = id_entry.get()
         trajanje = int(trajanje_entry.get())
@@ -364,9 +326,7 @@ def dodaj_aktivnost():
                 if ime_resursa in planer.all_resources:
                     resursi[ime_resursa.strip()] = int(1)
                 else:
-                    msgbox.showerror(
-                        "Error", "Resurs {} ne obstaja".format(ime_resursa)
-                    )
+                    msgbox.showerror("Error", "Resurs {} ne obstaja".format(ime_resursa))
                     return
         nova_aktivnost = Aktivnost(id_aktivnosti, trajanje, odvisnosti, resursi)
         planer.dodaj_aktivnost(nova_aktivnost)
@@ -400,9 +360,7 @@ def dodaj_resurs():
         resurs_name = all_resources_entry.get()
 
         if resurs_name in planer.all_resources:
-            msgbox.showerror(
-                "Error", "Resurs z imenom {} že obstaja".format(resurs_name)
-            )
+            msgbox.showerror("Error", "Resurs z imenom {} že obstaja".format(resurs_name))
             return
 
         if resurs_name:  # and resurs_quantity > 0:
@@ -448,13 +406,9 @@ def simuliraj():
     next_step_button.grid(row=1, column=0, columnspan=1)
 
     # Dodaj resource ki imajo consumable = False
-    resource_names = list(
-        [r for r in planer.all_resources if not planer.all_resources[r]["consumable"]]
-    )
+    resource_names = list([r for r in planer.all_resources if not planer.all_resources[r]["consumable"]])
     y_positions = [i * 20 for i in range(len(resource_names))]
-    resource_y_positions = {
-        name: y_pos for name, y_pos in zip(resource_names, y_positions)
-    }
+    resource_y_positions = {name: y_pos for name, y_pos in zip(resource_names, y_positions)}
 
     new_ax.set_yticks(y_positions)
     new_ax.set_yticklabels(resource_names)
@@ -462,34 +416,21 @@ def simuliraj():
 
 
 def next_step():
-    global \
-        planer, \
-        ax, \
-        canvas, \
-        new_ax, \
-        new_canvas, \
-        resource_y_positions, \
-        resource_availability
+    global planer, ax, canvas, new_ax, new_canvas, resource_y_positions, resource_availability
 
     if (
         "resource_availability" not in globals()
     ):  # dict kjer za vsak resurs hranimo tuple (start_time, end_time) ki predstavljajo kdaj je ta resurs zaseden
         resource_availability = {res: [] for res in planer.all_resources}
 
-    unfinished_activities = [
-        a
-        for a in planer.aktivnosti
-        if not a.finished and a.id not in ["start", "finish"]
-    ]
+    unfinished_activities = [a for a in planer.aktivnosti if not a.finished and a.id not in ["start", "finish"]]
 
     if not unfinished_activities:
         msgbox.showinfo("Info", "Vse aktivnosti so končane.")
         return
 
     ready_activities = [
-        a
-        for a in unfinished_activities
-        if all(dep.finished for dep in planer.aktivnosti if dep.id in a.odvisnosti)
+        a for a in unfinished_activities if all(dep.finished for dep in planer.aktivnosti if dep.id in a.odvisnosti)
     ]  # aktivnosti ki imajo vse potrebne predhodnike končane
 
     if not ready_activities:
@@ -498,9 +439,7 @@ def next_step():
     available_activities_slack = {
         a: a.ls - a.es for a in ready_activities
     }  # za vse izračunamo slack in vzamemo aktivnost z najmanjšim slackom
-    activity_with_smallest_slack = min(
-        available_activities_slack, key=available_activities_slack.get
-    )
+    activity_with_smallest_slack = min(available_activities_slack, key=available_activities_slack.get)
 
     # start time za aktivnost z najmanjšim slackom
     if activity_with_smallest_slack.resursi:
@@ -516,9 +455,7 @@ def next_step():
             resource_y_positions.get(res, 0) for res in required_resources
         ]  # aktivnost bomo narisal k vsakmu resursu ki ga potrebuje
         end_time = start_time + activity_with_smallest_slack.trajanje
-        for res in (
-            required_resources
-        ):  # dict resource_availability posodobimo z novim časom ko so resursi zasedeni
+        for res in required_resources:  # dict resource_availability posodobimo z novim časom ko so resursi zasedeni
             resource_availability[res].append((start_time, end_time))
 
     else:  # če ne uporabla resursov jo narišemo k "Brez" in je njen start time enak njenemu ES
@@ -532,18 +469,14 @@ def next_step():
     if (
         start_time > activity_with_smallest_slack.ls
     ):  # posodobimo ES in LS za vse aktivnosti če ES presega pričakovan LS (LS kjer nismo upoštevali resursov)
-        msgbox.showinfo(
-            "Info", "ES presega pričakovano vrednost. Posodobimo ES ter LS na grafu."
-        )
+        msgbox.showinfo("Info", "ES presega pričakovano vrednost. Posodobimo ES ter LS na grafu.")
         activity_with_smallest_slack.es = activity_with_smallest_slack.ls = start_time
         planer.izracunaj_es_naknadno()
         planer.izracunaj_ls_naknadno()
         planer.prikazi_urnik(ax, canvas)
 
     for y_pos in y_positions:  # narišemo na canvas aktivnost k vsem njenim resursom
-        draw_activity_on_canvas(
-            new_ax, activity_with_smallest_slack, start_time, end_time, y_pos
-        )
+        draw_activity_on_canvas(new_ax, activity_with_smallest_slack, start_time, end_time, y_pos)
 
     new_canvas.draw()
 
@@ -566,19 +499,12 @@ def find_next_available_time(required_resources, duration, es):
             # Check if the resource is free in the current time slot
             for start, end in intervals:
                 if start <= earliest_start_time < end:
-                    print(
-                        "Resource {} is busy in the time slot [{}, {}]".format(
-                            res, start, end
-                        )
-                    )
+                    print("Resource {} is busy in the time slot [{}, {}]".format(res, start, end))
                     # The resource is busy in this slot, move to the end of this busy period
                     earliest_start_time = end
                     resource_free = False
                     break
-                elif (
-                    earliest_start_time < start
-                    and earliest_start_time + duration > start
-                ):
+                elif earliest_start_time < start and earliest_start_time + duration > start:
                     # The current slot is free, but the activity will overlap with the next busy period
                     earliest_start_time = end
                     resource_free = False
@@ -725,9 +651,7 @@ def main():
     frame_aktivnost.grid_columnconfigure(0, weight=1)
     frame_aktivnost.grid_columnconfigure(1, weight=1)
 
-    id_label = tk.Label(
-        master=frame_aktivnost, text="ID aktivnosti:", font=("Helvetica", 16)
-    )
+    id_label = tk.Label(master=frame_aktivnost, text="ID aktivnosti:", font=("Helvetica", 16))
     id_label.grid(row=0, column=0, sticky="nsew")
     id_entry = tk.Entry(master=frame_aktivnost, font=("Helvetica", 16))
     id_entry.grid(row=0, column=1, sticky="nsew")
@@ -774,16 +698,12 @@ def main():
     frame_resurs.grid_columnconfigure(0, weight=1)
     frame_resurs.grid_columnconfigure(1, weight=1)
 
-    all_resources_label = tk.Label(
-        frame_resurs, text="ID resursa:", font=("Helvetica", 16)
-    )
+    all_resources_label = tk.Label(frame_resurs, text="ID resursa:", font=("Helvetica", 16))
     all_resources_label.grid(row=0, column=0, sticky="nsew")
     all_resources_entry = tk.Entry(frame_resurs, font=("Helvetica", 16))
     all_resources_entry.grid(row=0, column=1, sticky="nsew")
 
-    dodaj_resurs_button = tk.Button(
-        frame_resurs, text="Dodaj resurs", command=dodaj_resurs, font=("Helvetica", 16)
-    )
+    dodaj_resurs_button = tk.Button(frame_resurs, text="Dodaj resurs", command=dodaj_resurs, font=("Helvetica", 16))
     dodaj_resurs_button.grid(row=1, column=0, columnspan=2)
     frame_resurs.grid(row=1, column=1, sticky="nsew")
 

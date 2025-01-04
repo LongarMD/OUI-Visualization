@@ -17,9 +17,7 @@ from sklearn.decomposition import PCA
 import matplotlib.patches as patches
 
 
-def visualize(
-    data, labels, ax, showTestPoint=False, test_point=[], k=0, classified_class=None
-):
+def visualize(data, labels, ax, showTestPoint=False, test_point=[], k=0, classified_class=None):
     ax.clear()
     labels = labels.astype(int)
     colors = plt.cm.rainbow(np.linspace(0, 1, len(np.unique(labels))))
@@ -48,9 +46,7 @@ def visualize(
                 alpha=0.7,
             )
         else:
-            ax.scatter(
-                test_point[0], test_point[1], c="blue", marker="o", s=200, alpha=0.7
-            )
+            ax.scatter(test_point[0], test_point[1], c="blue", marker="o", s=200, alpha=0.7)
 
         if k > 0:
             distances = np.linalg.norm(data - test_point, axis=1)
@@ -101,9 +97,7 @@ def on_show_knn():
             msgbox.showerror("Error", "K should be a positive integer greater than 0")
             return
         if k > data.shape[0]:
-            msgbox.showerror(
-                "Error", "K should be less than or equal to the number of points"
-            )
+            msgbox.showerror("Error", "K should be less than or equal to the number of points")
             return
     except ValueError:
         msgbox.showerror("Error", "Please enter a valid number for K")
@@ -211,14 +205,10 @@ def main():
     # Radiobuttons for classifier choice
     classifier_choice = StringVar()
     classifier_choice.set("Majority")  # Default choice
-    majority_radio = tk.Radiobutton(
-        root, text="Majority", variable=classifier_choice, value="Majority"
-    )
+    majority_radio = tk.Radiobutton(root, text="Majority", variable=classifier_choice, value="Majority")
     majority_radio.grid(column=4, row=1)
 
-    weighted_radio = tk.Radiobutton(
-        root, text="Weighted", variable=classifier_choice, value="Weighted"
-    )
+    weighted_radio = tk.Radiobutton(root, text="Weighted", variable=classifier_choice, value="Weighted")
     weighted_radio.grid(column=5, row=1)
 
     btn_next_step = tk.Button(root, text="Show Neighbors", command=on_show_knn)

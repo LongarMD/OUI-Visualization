@@ -84,7 +84,7 @@ class App(tk.Tk):
         modules_menu.add_command(label=MainMenu.__label__, command=lambda: self.show_module(MainMenu))
         modules_menu.add_separator()
         for module in MODULES:
-            modules_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))
+            modules_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))  # type: ignore
         menubar.add_cascade(label="Menu", menu=modules_menu)
 
         # Create "Options" menu
@@ -128,7 +128,10 @@ class App(tk.Tk):
         Returns early if there is no current module or if the current module has
         no instructions.
         """
-        instructions = self._current_module.__instructions__ if self._current_module else None
+        if not self._current_module:
+            return
+
+        instructions = self._current_module.__instructions__
 
         if not instructions:
             return

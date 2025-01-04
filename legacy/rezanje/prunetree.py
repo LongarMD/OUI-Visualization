@@ -23,10 +23,7 @@ def gen_ex():
     # number of attributes
     na = random.randint(3, 4)
     # attribute values
-    av = [
-        ["abcdefghijklmnopqr"[r] for r in range(random.randint(2, 3))]
-        for i in range(na)
-    ]
+    av = [["abcdefghijklmnopqr"[r] for r in range(random.randint(2, 3))] for i in range(na)]
     # max tree depth
     mtd = random.randint(2, na) - 1
     # number of "test" values
@@ -167,19 +164,11 @@ def rep(dtree):
                 rst["formulas"] = [
                     [
                         "(Number of wrong categorizations on current node) $=$",
-                        " $=$ (Number of non-"
-                        + str(st["classification"])
-                        + ") $="
-                        + str(nwcn)
-                        + "$",
+                        " $=$ (Number of non-" + str(st["classification"]) + ") $=" + str(nwcn) + "$",
                     ],
                     [
                         "(Number of wrong categorizations on subtrees) $=$",
-                        " $="
-                        + ft.reduce(lambda x, y: str(x) + "+" + str(y), calc)
-                        + "="
-                        + str(scor)
-                        + "$",
+                        " $=" + ft.reduce(lambda x, y: str(x) + "+" + str(y), calc) + "=" + str(scor) + "$",
                     ],
                     [
                         "$" + str(nwcn) + "\leq" + str(scor) + "$"
@@ -325,15 +314,9 @@ def mep(dtree, attr, pa=dict(), m=1, ca=False, lapl=False):
                         frm += "0+"
                 st["reverse estimate"] = rev_est
                 # calculate classification estimate
-                st["classification estimate"] = better(
-                    st["reverse estimate"], st["static estimate"]
-                )
+                st["classification estimate"] = better(st["reverse estimate"], st["static estimate"])
                 st["focus"] = "true"
-                do_cut = (
-                    rev_est <= st["static estimate"]
-                    if ca
-                    else rev_est >= st["static estimate"]
-                )
+                do_cut = rev_est <= st["static estimate"] if ca else rev_est >= st["static estimate"]
                 if do_cut:
                     for sst in st["subtrees"]:
                         sst["cut"] = "true"
@@ -350,16 +333,14 @@ def mep(dtree, attr, pa=dict(), m=1, ca=False, lapl=False):
                 if do_cut:
                     rst["formulas"] += [
                         [
-                            "reverse estimate $%s$ static estimate"
-                            % ("\\leq" if ca else "\\geq"),
+                            "reverse estimate $%s$ static estimate" % ("\\leq" if ca else "\\geq"),
                             "CUT SUBTREES",
                         ]
                     ]
                 else:
                     rst["formulas"] += [
                         [
-                            "reverse estimate $%s$ static estimate"
-                            % (">" if ca else "<"),
+                            "reverse estimate $%s$ static estimate" % (">" if ca else "<"),
                             "KEEP SUBTREES",
                         ]
                     ]
@@ -391,22 +372,11 @@ def create_graph(tree, method, preprocessed=True):
                 nattrs = (
                     nattrs
                     + "|"
-                    + (
-                        "[" + str(key) + "]"
-                        if key == st["classification"]
-                        else str(key)
-                    )
+                    + ("[" + str(key) + "]" if key == st["classification"] else str(key))
                     + ": "
                     + str(value)
                 )
-            label = (
-                "{"
-                + str(st["classification"])
-                + nattrs
-                + "|"
-                + str(st["attribute"])
-                + "}"
-            )
+            label = "{" + str(st["classification"]) + nattrs + "|" + str(st["attribute"]) + "}"
             sh = str(hash(json.dumps(st))) + ph
             if st["focus"] == "true":
                 dot.node(sh, label, shape="record", color="blue")
@@ -434,14 +404,7 @@ def create_graph(tree, method, preprocessed=True):
         nattrs = ""
         for key, value in tree["classification#"].items():
             nattrs = nattrs + "|" + str(key) + ": " + str(value)
-        label = (
-            "{"
-            + str(tree["classification"])
-            + nattrs
-            + "|"
-            + str(tree["attribute"])
-            + "}"
-        )
+        label = "{" + str(tree["classification"]) + nattrs + "|" + str(tree["attribute"]) + "}"
         if tree["focus"] == "true":
             dot.node(ph, label, shape="record", color="blue")
         else:
@@ -454,14 +417,7 @@ def create_graph(tree, method, preprocessed=True):
         nattrs = ""
         for key, value in tree["classification#"].items():
             nattrs = nattrs + "|" + str(key) + ": " + str(value)
-        label = (
-            "{"
-            + str(tree["classification"])
-            + nattrs
-            + "|"
-            + str(tree["attribute"])
-            + "}"
-        )
+        label = "{" + str(tree["classification"]) + nattrs + "|" + str(tree["attribute"]) + "}"
         if tree["focus"] == "true":
             dot.node(ph, label, shape="record", color="blue")
         else:
@@ -486,9 +442,7 @@ def render_trace(trace, font_size=13):
         axis="columns",
     )
     tbl.index.name = ""
-    tblp = pd.plotting.table(
-        ax, tbl, loc="center", cellLoc="center", colColours=["gainsboro"] * len(tbl)
-    )
+    tblp = pd.plotting.table(ax, tbl, loc="center", cellLoc="center", colColours=["gainsboro"] * len(tbl))
     # ,bbox=[0,0.1,winw*0.5/len(list(trace['table'].columns)),winh*10/len(trace['table'])])
     tblp.auto_set_font_size(False)
     tblp.set_fontsize(font_size * 0.8)
@@ -496,9 +450,7 @@ def render_trace(trace, font_size=13):
         if not args.laplace:
             ax.annotate("$p_a$:", xy=(0, 0.92), fontsize=font_size)
             for i, (k, v) in enumerate(pa.items()):
-                ax.annotate(
-                    f"{k}: {v}", xy=(0.1, 0.8 + i * font_size / 220), fontsize=font_size
-                )
+                ax.annotate(f"{k}: {v}", xy=(0.1, 0.8 + i * font_size / 220), fontsize=font_size)
     fms += [fig]
     for tree in trace["trace"]:
         gr = create_graph(tree, trace["method"])
@@ -612,11 +564,7 @@ def save_html(f, trace, trees, fms, render):
     f.write(trace["table"].to_html())
     if trace["method"] == "MEP":
         out_tbl = trace["original"]["pa"]
-        f.write(
-            pd.DataFrame(
-                columns=out_tbl.keys(), data=[out_tbl.values()], index=["pa"]
-            ).to_html()
-        )
+        f.write(pd.DataFrame(columns=out_tbl.keys(), data=[out_tbl.values()], index=["pa"]).to_html())
         if not args.laplace:
             f.write(f'm = {trace["original"]["m"]}')
     f.write(f'<h1>Steps in {trace["method"]}</h1>')
@@ -746,9 +694,7 @@ def gui(trace, trees, fms):
     tk.Label(settw, text="Pruning method:").grid(row=0, column=0)
     setmethv = tk.StringVar()
     methops = ["REP", "MEP"]
-    setmeth = ttk.OptionMenu(
-        settw, setmethv, methops[0 if args.rep else 1], *methops, command=updmeth
-    )
+    setmeth = ttk.OptionMenu(settw, setmethv, methops[0 if args.rep else 1], *methops, command=updmeth)
     setmeth.grid(row=0, column=1)
     tk.Label(settw, text="Metric:").grid(row=1, column=0)
 
@@ -760,9 +706,7 @@ def gui(trace, trees, fms):
 
     setcav = tk.StringVar()
     caops = ["Classification accuraccy", "Classification error"]
-    setca = ttk.OptionMenu(
-        settw, setcav, caops[0 if args.ca else 1], *caops, command=updca
-    )
+    setca = ttk.OptionMenu(settw, setcav, caops[0 if args.ca else 1], *caops, command=updca)
     if not args.mep:
         setca.configure(state="disabled")
     setca.grid(row=1, column=1)
@@ -777,9 +721,7 @@ def gui(trace, trees, fms):
 
     setlav = tk.StringVar()
     laops = ["Laplace estimate", "M-estimate"]
-    setla = ttk.OptionMenu(
-        settw, setlav, laops[0 if args.laplace else 1], *laops, command=updla
-    )
+    setla = ttk.OptionMenu(settw, setlav, laops[0 if args.laplace else 1], *laops, command=updla)
     if not args.mep:
         setla.configure(state="disabled")
     setla.grid(row=2, column=1)
@@ -851,9 +793,7 @@ def gui(trace, trees, fms):
 
     # export button
     def exp_win(*xs):
-        filename = tk.filedialog.asksaveasfile(
-            filetypes=[("HTML", "*.html"), ("JSON", "*.json")]
-        )
+        filename = tk.filedialog.asksaveasfile(filetypes=[("HTML", "*.html"), ("JSON", "*.json")])
         if filename is None:
             return
         if filename.name.endswith(".html"):
@@ -918,9 +858,7 @@ def gui(trace, trees, fms):
         # print(cur_step)
 
     btn_right["command"] = next_step
-    btn_right["state"] = (
-        "disabled" if cur_step == len(trace["trace"]) - 1 else "enabled"
-    )
+    btn_right["state"] = "disabled" if cur_step == len(trace["trace"]) - 1 else "enabled"
     btn_left.grid(row=0, column=0, sticky="nsew")
     btn_right.grid(row=0, column=1, sticky="nsew")
     # first step
@@ -951,12 +889,8 @@ if __name__ == "__main__":
         description="A visualizer for learning REP, MEP methods for decision tree prunning.",
     )
     parser.add_argument("--rep", help="use REP method", action="store_true")
-    parser.add_argument(
-        "--mep", help="use MEP method by minimizing error", action="store_true"
-    )
-    parser.add_argument(
-        "--cli", help="do not display the graphical user interface", action="store_true"
-    )
+    parser.add_argument("--mep", help="use MEP method by minimizing error", action="store_true")
+    parser.add_argument("--cli", help="do not display the graphical user interface", action="store_true")
     parser.add_argument(
         "--version",
         help="display version of this program",
@@ -968,17 +902,13 @@ if __name__ == "__main__":
         help="import tree from file",
         type=FileTypeWithExtensionCheck("r", valid_extensions=(".json")),
     )
-    parser.add_argument(
-        "--no-preprocess", help="do not preprocess the given tree", action="store_true"
-    )
+    parser.add_argument("--no-preprocess", help="do not preprocess the given tree", action="store_true")
     parser.add_argument(
         "--table",
         help="import a table (test table for REP method or data table for MEP)",
         type=FileTypeWithExtensionCheck("r", valid_extensions=(".csv")),
     )
-    parser.add_argument(
-        "--sep", "--separator", help="set separator for reading csv files"
-    )
+    parser.add_argument("--sep", "--separator", help="set separator for reading csv files")
     parser.add_argument("-a", "--attribute", help="main classification attribute")
     parser.add_argument(
         "-o",
@@ -986,12 +916,8 @@ if __name__ == "__main__":
         help="export the solving process to json, html",
         type=FileTypeWithExtensionCheck("w", valid_extensions=(".json", ".html")),
     )
-    parser.add_argument(
-        "--ca", help="use MEP method by maximizing accuracy", action="store_true"
-    )
-    parser.add_argument(
-        "--err", help="use MEP method by minimizing error", action="store_true"
-    )
+    parser.add_argument("--ca", help="use MEP method by maximizing accuracy", action="store_true")
+    parser.add_argument("--err", help="use MEP method by minimizing error", action="store_true")
     parser.add_argument(
         "--laplace",
         help="when using the MEP method use laplace's probability estimation (otherwise use the m-estimate)",
