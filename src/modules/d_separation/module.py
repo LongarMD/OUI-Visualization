@@ -28,6 +28,7 @@ class D_Separation(Module):
     G: DSeparationGraph | None = None
 
     def __init__(self, app: "App"):
+        self.after_id = None
         super().__init__(app)
 
         self.active_nodes = []
@@ -35,6 +36,12 @@ class D_Separation(Module):
 
         self.create_widgets()
         self.init_graph()
+
+    def destroy(self):
+        self.cancel_highlight()
+        plt.close()
+        self.canvas_widget.destroy()
+        super().destroy()
 
     def create_widgets(self):
         font_style = ("Courier New", 14, "bold")
@@ -69,9 +76,7 @@ class D_Separation(Module):
 
     def init_graph(self):
         # Stop highlighting
-        if self.after_id:
-            self.after_cancel(self.after_id)
-            self.after_id = None
+        self.cancel_highlight()
 
         _G = DSeparationGraph()
 
@@ -167,7 +172,14 @@ class D_Separation(Module):
 
         self.highlight_sets_sequentially(list(E))
 
+    def cancel_highlight(self):
+        if self.after_id:
+            self.after_cancel(self.after_id)
+            self.after_id = None
+
     def highlight_sets_sequentially(self, sets, current_index=0, separated_nodes=None):
+        self.cancel_highlight()
+
         sets.sort(key=len)
 
         if not separated_nodes:
