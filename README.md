@@ -15,13 +15,7 @@
   - uses tkinter
   - works
 
-- [ ] AO
-
-  - uses tkinter
-  - works
-  - uses a lot of global variables
-
-- [ ] D-separation
+- [x] D-separation
 
   - uses tkinter
   - works
@@ -36,22 +30,28 @@
   - heavy preprocessing, before the UI even opens
   - does not exit after closing the window, requires a force quit
 
+- [ ] AO
+
+  - uses tkinter
+  - works
+  - uses a lot of global variables
+
 - [ ] Nomogram
 
   - uses a **jupyter notebook**
   - works
-
-- [ ] Planiranje
-
-  - uses **pygame**
-  - works
-  - throws error when moving blocks
 
 - [ ] Razporejanje
 
   - uses tkinter
   - works
   - no example input
+
+- [ ] Planiranje
+
+  - uses **pygame**
+  - works
+  - throws error when moving blocks
 
 - [ ] Rezanje
   - uses tkinter
