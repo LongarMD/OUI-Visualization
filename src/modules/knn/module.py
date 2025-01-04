@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 import tkinter.ttk as ttk
 import tkinter as tk
 import tkinter.messagebox as msgbox
@@ -182,7 +182,7 @@ class KNN(Module):
 
         self.canvas.draw()
 
-    def on_click(self, event: plt.MouseEvent) -> None:
+    def on_click(self, event: Any) -> None:
         """Handle mouse click events to place test points.
 
         Args:

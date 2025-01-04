@@ -1289,6 +1289,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "networkx" },
     { name = "numpy" },
+    { name = "pandas" },
     { name = "scikit-learn" },
     { name = "sv-ttk" },
 ]
@@ -1314,6 +1315,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.10.0" },
     { name = "networkx", specifier = ">=3.4.2" },
     { name = "numpy", specifier = ">=2.2.1" },
+    { name = "pandas", specifier = ">=2.2.3" },
     { name = "pandas", marker = "extra == 'legacy'", specifier = ">=2.2.3" },
     { name = "plotly", marker = "extra == 'legacy'", specifier = ">=5.24.1" },
     { name = "pygame", marker = "extra == 'legacy'", specifier = ">=2.6.1" },
