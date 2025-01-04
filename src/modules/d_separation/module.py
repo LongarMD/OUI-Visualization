@@ -27,11 +27,36 @@ B D
 B E
 C E"""
 
+instructions = """# Instructions
+
+1. Graph Creation
+   - Enter edges in the text box using the format: "A B" (one edge per line)
+   - Each line represents a directed edge from node A to node B
+   - Click "Generate Graph" to create the graph
+   - Click "Randomize" to generate a random graph
+
+2. Node Selection
+   - Click on nodes to select them (they will turn green)
+   - You can select up to 2 nodes at a time
+   - Click a selected node again to deselect it
+
+3. Finding D-separating Sets
+   - Select exactly 2 nodes
+   - Click "Find D-separating Sets" to see all sets that d-separate the selected nodes
+   - The d-separating sets will be displayed in yellow
+   - Sets will cycle automatically every 2 seconds
+   - Empty set (∅) means the nodes are d-separated without conditioning
+   - If no sets are found, the nodes cannot be d-separated
+
+Note: The graph must be acyclic (no cycles allowed). If you create a cyclic graph, you'll receive an error message.
+"""
+
 
 class D_Separation(Module):
     """A module for visualizing and finding d-separation sets in directed acyclic graphs."""
 
     __label__ = "D-Separation"
+    __instructions__ = instructions
 
     after_id: str | None = None
     G: DSeparationGraph | None = None

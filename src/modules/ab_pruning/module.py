@@ -24,6 +24,24 @@ if TYPE_CHECKING:
     from common.app import App
 
 
+instruction_text = """# Generate Tree
+To create a tree, provide both the tree structure and leaf values.
+---
+# Tree Structure
+Define the number of children for nodes in each layer. For instance, use the format 'n|m1,m2,m3' where 'n' is the number of children for the app node, and 'm1,m2,m3' represent the number of children for the nodes in the next layer. Example: '3|3,3,3' signifies that the app node has 3 children, and each of those children has 3 children as well.
+---
+# Leaf Values
+Input a list of numbers (possibly decimals) separated by commas. For the previously mentioned tree structure, an example would be: '-11,4,3,1.5,1,-5.3,7,-10,20'.
+Ensure that the input is semantically valid; otherwise, the tree cannot be generated.
+---
+# Alpha Beta Pruning Simulation
+After generating a tree, simulate Alpha Beta pruning by clicking on the arrow buttons.
+---
+# Handling Large Trees
+If the input generates a tree that is too large for the canvas, drag the tree around
+to view different parts of the tree. You can also use mouse-wheel for zooming."""
+
+
 class AB_Pruning(Module):
     """
     Main module class for the Alpha-Beta Pruning visualization.
@@ -37,6 +55,7 @@ class AB_Pruning(Module):
     """
 
     __label__ = "Alpha-beta pruning"
+    __instructions__ = instruction_text
 
     node_radius: int = 30
     tree_structure_lst: Optional[List[List[int]]] = None
@@ -127,16 +146,8 @@ class AB_Pruning(Module):
             columnspan=3,
             padx=(20, 10),
             pady=10,
-            sticky=tk.NSEW,
+            sticky="sew",
         )
-
-        # instructions
-        self.instruction_btn = ttk.Button(
-            sim_frame,
-            text="Instructions",
-            command=self.show_instructions,
-        )
-        self.instruction_btn.grid(row=0, column=0, columnspan=4, sticky=tk.EW, pady=(0, 5))
 
         self.all_backward_button = ttk.Button(sim_frame, text="<<")
         self.all_backward_button.grid(row=1, column=0, padx=(0, 5), sticky=tk.EW)
@@ -223,43 +234,6 @@ class AB_Pruning(Module):
         else:
             print("input is not valid!")
             self.invalid_input(tree_str_valid)
-
-    def show_instructions(self):
-        """
-        Displays a popup window with instructions on how to use the module.
-
-        Includes information about:
-        - Tree structure input format
-        - Leaf values input format
-        - Simulation controls
-        - Navigation tips for large trees
-        """
-        instruction = tk.Toplevel(self.app)
-        instruction.title("Program Instructions")
-        # instruction.geometry("500x400")
-
-        instruction_text = (
-            "Generate Tree:\n"
-            "To create a tree, provide both the tree structure and leaf values.\n\n"
-            "Tree Structure:\n"
-            "Define the number of children for nodes in each layer. For instance, use the format\n"
-            "'n|m1,m2,m3' where 'n' is the number of children for the app node, and 'm1,m2,m3'\n"
-            "represent the number of children for the nodes in the next layer. Example: '3|3,3,3'\n"
-            "signifies that the app node has 3 children, and each of those children has 3 children\n"
-            "as well.\n\n"
-            "Leaf Values:\n"
-            "Input a list of numbers (possibly decimals) separated by commas. For the previously\n"
-            "mentioned tree structure, an example would be: '-11,4,3,1.5,1,-5.3,7,-10,20'.\n\n"
-            "Ensure that the input is semantically valid; otherwise, the tree cannot be generated.\n\n"
-            "Alpha Beta Pruning Simulation:\n"
-            "After generating a tree, simulate Alpha Beta pruning by clicking on '<<' and '>>'.\n\n"
-            "Handling Large Trees:\n"
-            "If the input generates a tree that is too large for the canvas, drag the tree around\n"
-            "to view different parts of the tree. You can also use mouse-wheel for zooming."
-        )
-
-        label = ttk.Label(instruction, text=instruction_text, justify="left", padding=10)
-        label.grid(row=0, column=0, pady=10, padx=10)
 
     def invalid_input(self, tree_str_valid: bool) -> None:
         """

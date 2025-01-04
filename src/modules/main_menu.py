@@ -16,6 +16,7 @@ MODULES: List[Type[Module]] = [AB_Pruning, AO_Star, D_Separation]
 
 class MainMenu(Module):
     __label__ = "Main menu"
+    __instructions__ = "Select a module to start"
 
     def __init__(self, app: "App") -> None:
         super().__init__(app)

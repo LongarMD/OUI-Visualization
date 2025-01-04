@@ -11,11 +11,14 @@ class Module(tk.Frame):
     __label__: str
     """Label of the module, used in the menu"""
 
+    __instructions__: str
+    """Instructions for the module, used in the menu"""
+
     app: "App"
     """Reference to the App instance"""
 
     def __init__(self, app: "App") -> None:
-        super().__init__()
+        super().__init__(app)
         self.app = app
 
     @property

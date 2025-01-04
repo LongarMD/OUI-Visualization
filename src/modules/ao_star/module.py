@@ -11,9 +11,21 @@ from modules.ao_star.examples import get_example
 if TYPE_CHECKING:
     from common.app import App
 
+instructions = """# Instructions
+
+The AO* algorithm simulation includes a graph, starting heuristics table, and a status bar for guidance. To navigate the simulation:
+
+1. Choose a node to develop.
+2. Input the node's F and G values, guided by provided cues.
+3. Confirm correct values to proceed, repeating the process.
+4. Completion is achieved when a solution tree is identified.
+
+Nodes and heuristics can be adjusted using the respective buttons. The 'Skip' button allows progression without specific node selection or value entry. The value 1000 denotes infinity."""
+
 
 class AO_Star(Module):
     __label__ = "AO*"
+    __instructions__ = instructions
 
     solver: AOStarSolver
     canvas: tk.Canvas
@@ -279,10 +291,6 @@ class AO_Star(Module):
                 self.canvas.create_text(x + 40, y, fill="black", text=f"F({node.name})={current_nodes[node]}")
             # save position for node id
             self.id2name[node_id] = node
-
-        # HELP BUTTON
-        help_button = tk.Button(self, text="Help")  # TODO:, command=display_help)
-        self.canvas.create_window(25, 20, window=help_button)
 
         # skip next step
         hint_button = tk.Button(self, text="Skip")  # TODO:, command=next_step)
