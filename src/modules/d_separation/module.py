@@ -25,8 +25,7 @@ default_adjacency_matrix = """A B
 A C
 B D
 B E
-C E
-"""
+C E"""
 
 
 class D_Separation(Module):
@@ -61,9 +60,16 @@ class D_Separation(Module):
 
     def create_widgets(self):
         """Create and layout all the GUI widgets for the module."""
+        # Configure grid weights for the main module frame
+        self.grid_rowconfigure(2, weight=1)  # Make the graph row expandable
+        self.grid_columnconfigure(0, weight=1)  # Make the column expandable
+
         font_style = ("Courier New", 14, "bold")
+
+        # Configure input frame
         input_frame = ttk.Frame(self, padding=5)
-        input_frame.grid(row=0, column=0, sticky="ew")
+        input_frame.grid(row=0, column=0, sticky="nsew")  # Changed sticky to nsew
+        input_frame.grid_columnconfigure(0, weight=1)  # Make the text widget expand horizontally
 
         style = ttk.Style()
         style.configure("Custom.TText", font=font_style)
@@ -71,21 +77,24 @@ class D_Separation(Module):
         self.adj_matrix_input.pack(padx=5, pady=5, fill="both", expand=True)
         self.adj_matrix_input.insert(tk.END, default_adjacency_matrix)
 
+        # Configure button frame
         btn_frame = ttk.Frame(self, padding=5)
-        btn_frame.grid(row=1, column=0, sticky="ew")
+        btn_frame.grid(row=1, column=0, sticky="nsew")  # Changed sticky to nsew
+        btn_frame.grid_columnconfigure((0, 1, 2), weight=1)  # Give equal weight to all button columns
 
+        # Update button configurations to use grid instead of pack
         btn_init_graph = ttk.Button(btn_frame, text="Generate Graph", command=self.init_graph, style="Custom.TButton")
-        btn_init_graph.pack(side="left", padx=5, pady=5, fill="x", expand=True)
+        btn_init_graph.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
         btn_randomize = ttk.Button(
             btn_frame, text="Randomize", command=lambda: self.init_graph(randomize=True), style="Custom.TButton"
         )
-        btn_randomize.pack(side="left", padx=5, pady=5, fill="x", expand=True)
+        btn_randomize.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         btn_d_separation = ttk.Button(
             btn_frame, text="Find D-separating Sets", command=self.d_separation, style="Custom.TButton"
         )
-        btn_d_separation.pack(side="left", padx=5, pady=5, fill="x", expand=True)
+        btn_d_separation.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
         self.fig, self.ax = plt.subplots(figsize=(8, 8))
         self.fig.patch.set_facecolor("black")
