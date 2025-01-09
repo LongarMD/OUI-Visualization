@@ -56,6 +56,7 @@ class D_Separation(Module):
 
     __label__: str = "D-Separation"
     __instructions__: str = instructions
+    __category_key__: str = "deduction"
 
     after_id: str | None = None
     G: DSeparationGraph

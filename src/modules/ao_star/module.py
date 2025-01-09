@@ -52,6 +52,7 @@ Note: The value 1000 represents infinity in cost calculations."""
 class AO_Star(Module):
     __label__ = "AO*"
     __instructions__ = instructions
+    __category_key__ = "search"
 
     solver: AOStarSolver
     canvas: tk.Canvas

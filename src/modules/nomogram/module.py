@@ -5,7 +5,7 @@ import tkinter.ttk as ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from common.module import Module
-from .naive_bayes import calculate_df, calculate_points, generate_random
+from .nomogram import calculate_df, calculate_points, generate_random
 
 if TYPE_CHECKING:
     from common.app import App
@@ -30,11 +30,12 @@ Note: The nomogram visualizes how each feature contributes to the final predicti
 """
 
 
-class NaiveBayes(Module):
+class Nomogram(Module):
     """A module for visualizing and using Naive Bayes classification through nomograms."""
 
-    __label__ = "Naive Bayes"
+    __label__ = "Nomogram"
     __instructions__ = instructions
+    __category_key__ = "machine_learning"
 
     def __init__(self, app: "App"):
         """Initialize the Naive Bayes module.

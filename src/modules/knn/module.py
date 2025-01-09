@@ -48,6 +48,7 @@ class KNN(Module):
 
     __label__: str = "KNN"
     __instructions__: str = instructions
+    __category_key__: str = "machine_learning"
 
     def __init__(self, app: "App") -> None:
         """Initialize the KNN module.

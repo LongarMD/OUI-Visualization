@@ -88,13 +88,13 @@ class App(tk.Tk):
         menubar.add_cascade(label="Menu", menu=modules_menu)
 
         # Create "Options" menu
-        # options_menu = tk.Menu(menubar, tearoff=False)
-        # options_menu.add_command(label="Toggle Theme", command=sv_ttk.toggle_theme)
-        # options_menu.add_command(label="Exit", command=self.quit)
-        # menubar.add_cascade(label="Options", menu=options_menu)
+        options_menu = tk.Menu(menubar, tearoff=False)
+        # options_menu.add_command(label=Toggle Theme", command=sv_ttk.toggle_theme)
+        options_menu.add_command(label="Help", command=self.show_help)
+        options_menu.add_command(label="Exit", command=self.quit)
+        menubar.add_cascade(label="Options", menu=options_menu)
 
         # Help menu
-        menubar.add_command(label="Help", command=self.show_help)
 
         self.config(menu=menubar)
 

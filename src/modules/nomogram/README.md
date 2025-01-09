@@ -1,6 +1,6 @@
-# Naive Bayes Module
+# Nomogram Module
 
-This module implements a Naive Bayes classifier for predicting whether to play golf based on weather conditions.
+This module implements a nomogram for predicting whether to play golf based on weather conditions.
 
 ## Features
 

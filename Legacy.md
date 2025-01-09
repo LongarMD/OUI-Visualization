@@ -36,7 +36,7 @@
   - works
   - uses a lot of global variables
 
-- [ ] Nomogram
+- [x] Nomogram
 
   - uses a **jupyter notebook**
   - works

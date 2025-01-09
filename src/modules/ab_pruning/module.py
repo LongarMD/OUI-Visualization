@@ -73,6 +73,7 @@ class AB_Pruning(Module):
 
     __label__ = "Alpha-beta pruning"
     __instructions__ = instruction_text
+    __category_key__ = "search"
 
     node_radius: int = 30
     tree_structure_lst: Optional[List[List[int]]] = None
