@@ -56,7 +56,7 @@ class D_Separation(Module):
 
     __label__: str = "D-Separation"
     __instructions__: str = instructions
-    __category_key__: str = "deduction"
+    __category_key__: str = "reasoning"
     __short_description__: str = "Interactive visualization of d-separation: Graph visualization where you can select two nodes. The program then displays (colors, highlights) all sets of nodes that d-separate these two nodes."
 
     after_id: str | None = None

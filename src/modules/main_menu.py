@@ -19,7 +19,7 @@ category_names = {
     "machine_learning": "Machine Learning",
     "search": "Search",
     "planning": "Planning and Task Scheduling",
-    "deduction": "Deduction",
+    "reasoning": "Reasoning",
 }
 
 

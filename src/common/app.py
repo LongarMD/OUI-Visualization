@@ -119,7 +119,7 @@ class App(tk.Tk):
         """
         Display a help window with instructions for the current module.
 
-        Creates a new window containing formatted text from the current module's
+        Creates a new window containin=g formatted text from the current module's
         __instructions__ attribute. The text supports basic markdown formatting.
 
         The window includes a scrollbar that appears only when needed. If a help

@@ -17,7 +17,7 @@ class Module(tk.Frame):
     __short_description__: str
     """Short description of the module, used in the menu"""
 
-    __category_key__: Literal["machine_learning", "search", "planning", "deduction"]
+    __category_key__: Literal["machine_learning", "search", "planning", "reasoning"]
     """Category key of the module, used in the menu"""
 
     app: "App"
