@@ -30,7 +30,7 @@
   - heavy preprocessing, before the UI even opens
   - does not exit after closing the window, requires a force quit
 
-- [ ] AO
+- [ ] AO => to legacy
 
   - uses tkinter
   - works
@@ -41,19 +41,19 @@
   - uses a **jupyter notebook**
   - works
 
-- [ ] Razporejanje
+- [ ] Razporejanje => to module
 
   - uses tkinter
   - works
   - no example input
 
-- [ ] Planiranje
+- [ ] Planiranje => to legacy
 
   - uses **pygame**
   - works
   - throws error when moving blocks
 
-- [ ] Rezanje
+- [ ] _Rezanje_
   - uses tkinter
   - **does not work**
   - made for cli, gui ("TODO: počasno")
