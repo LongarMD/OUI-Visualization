@@ -1,7 +1,5 @@
 # OUI Algorithm Visualizations
 
-## Overview
-
 This repository contains a collection of interactive visualizations for various algorithms. Each module is designed to be standalone and can be run independently.
 
 ## Modules
@@ -30,3 +28,22 @@ uv run python src/main.py
 
 ## Development
 
+The core of the application is in the [common](src/common) directory:
+- The [App](src/common/app.py) class is the main entry point for the application. It handles the main window, module switching, and help window.
+- The [Module](src/common/module.py) class is the base class for all modules. It derives from tkinter.Frame and provides a common interface for all modules.
+
+The modules are in the [modules](src/modules) directory, including the
+- [MainMenu](src/common/main_menu.py) class is the main menu for the application.
+
+
+### Adding a new module
+
+1. Create a new directory in the [modules](src/modules) directory.
+2. Create a new module.py file in the new directory.
+3. Create a new class that derives from [Module](src/common/module.py). The class must define:
+   - The __init__ method, which takes a single argument, the App instance.
+   - The __label__ attribute, which is the name of the module that will be displayed in the menu.
+   - The __instructions__ attribute, which is the instructions for the module that will be displayed in the help window.
+   - The __short_description__ attribute, which is the short description of the module that will be displayed in the menu.
+   - The __category_key__ attribute, which is the category key of the module. Module keys are defined in [Module](src/common/module.py), and used in the main menu to group modules.
+4. Add the new module to the [MainMenu](src/common/main_menu.py)'s MODULES list.
