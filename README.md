@@ -47,3 +47,14 @@ The modules are in the [modules](src/modules) directory, including the
    - The __short_description__ attribute, which is the short description of the module that will be displayed in the menu.
    - The __category_key__ attribute, which is the category key of the module. Module keys are defined in [Module](src/common/module.py), and used in the main menu to group modules.
 4. Add the new module to the [MainMenu](src/common/main_menu.py)'s MODULES list.
+
+
+### Code standard
+
+- Follow the structure of the existing modules.
+- Use the `ruff` formatter and linter:
+  ```bash
+  uvx ruff check src
+  uvx ruff format src
+  ```
+- Use type hints 
