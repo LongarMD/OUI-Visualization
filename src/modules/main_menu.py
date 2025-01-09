@@ -30,7 +30,7 @@ class MainMenu(Module):
     def __init__(self, app: "App") -> None:
         super().__init__(app)
 
-        self.categories = [m.__category_key__ for m in MODULES]
+        self.categories = {m.__category_key__ for m in MODULES}
         for c in self.categories:
             if c not in category_names:
                 raise ValueError(f"Category {c} not found in category_names")
@@ -44,15 +44,50 @@ class MainMenu(Module):
 
         # Create a tab for each category
         category_tabs = {}
-        for category in set(m.__category_key__ for m in MODULES):
-            frame = ttk.Frame(notebook)
+        for category in category_names:
+            if category not in self.categories:
+                continue
+            frame = ttk.Frame(notebook, padding=15)
+            frame.grid_columnconfigure(1, weight=1)
+
             notebook.add(frame, text=category_names[category])
             category_tabs[category] = frame
 
-        # Add buttons to their respective category tabs
-        for module in MODULES:
-            ttk.Button(
-                category_tabs[module.__category_key__],
+        # Configure style for large, bold buttons
+        style = ttk.Style()
+        style.configure(
+            "Bold.TButton",
+            font=("TkDefaultFont", 15, "bold"),  # Much larger font
+            padding=(10, 20),
+        )  # Add internal padding (left/right, top/bottom)
+
+        for i, module in enumerate(MODULES):
+            frame = category_tabs[module.__category_key__]
+
+            btn = ttk.Button(
+                frame,
                 text=module.__label__,
                 command=lambda m=module: self.app.show_module(m),  # type: ignore
-            ).pack(pady=10)
+                width=20,
+                style="Bold.TButton",
+            )
+            btn.grid(
+                row=i * 2,
+                column=0,
+                padx=10,
+                pady=10,
+                sticky="nsew",
+                rowspan=2,
+            )
+
+            # Create and configure the description label
+            description = module.__short_description__
+            desc_label = ttk.Label(frame, text=description, wraplength=600, justify="left")
+            desc_label.grid(
+                row=i * 2,
+                column=1,
+                padx=10,
+                pady=10,
+                sticky="nsew",
+                rowspan=2,
+            )

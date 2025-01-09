@@ -53,6 +53,7 @@ class AO_Star(Module):
     __label__ = "AO*"
     __instructions__ = instructions
     __category_key__ = "search"
+    __short_description__ = "Interactive visualization of AO* tree search. The computer draws a small search tree and heuristic h, and the user must first select which node to expand and enter the correct values."
 
     solver: AOStarSolver
     canvas: tk.Canvas

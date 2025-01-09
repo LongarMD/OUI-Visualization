@@ -49,6 +49,7 @@ class KNN(Module):
     __label__: str = "KNN"
     __instructions__: str = instructions
     __category_key__: str = "machine_learning"
+    __short_description__: str = "KNN visualization that plots data in 2D (point cloud) and for a selected test case and k parameter value shows the nearest neighbors and predicted class."
 
     def __init__(self, app: "App") -> None:
         """Initialize the KNN module.

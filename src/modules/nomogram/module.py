@@ -36,6 +36,7 @@ class Nomogram(Module):
     __label__ = "Nomogram"
     __instructions__ = instructions
     __category_key__ = "machine_learning"
+    __short_description__ = "Interactive visualization of a nomogram for Naive Bayes classification. Shows how each feature contributes to the probability of playing golf based on weather conditions."
 
     def __init__(self, app: "App"):
         """Initialize the Naive Bayes module.
