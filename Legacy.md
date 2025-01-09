@@ -53,7 +53,7 @@
   - works
   - throws error when moving blocks
 
-- [ ] _Rezanje_
+- [ ] _Rezanje_ => Remove
   - uses tkinter
   - **does not work**
   - made for cli, gui ("TODO: počasno")
