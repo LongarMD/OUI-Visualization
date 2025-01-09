@@ -139,22 +139,22 @@ class Nomogram(Module):
 
         # Layout dropdowns
         ttk.Label(parent, text="Outlook:", justify="right").grid(row=0, column=0, padx=5, sticky="e")
-        ttk.Combobox(parent, textvariable=self.outlook_var, values=choices_outlook, state="readonly").grid(
+        ttk.Combobox(parent, textvariable=self.outlook_var, values=choices_outlook, state="readonly", width=10).grid(
             row=0, column=1, padx=5
         )
 
         ttk.Label(parent, text="Temperature:", justify="right").grid(row=0, column=2, padx=5, sticky="e")
-        ttk.Combobox(parent, textvariable=self.temp_var, values=choices_temp, state="readonly").grid(
+        ttk.Combobox(parent, textvariable=self.temp_var, values=choices_temp, state="readonly", width=10).grid(
             row=0, column=3, padx=5
         )
 
         ttk.Label(parent, text="Humidity:", justify="right").grid(row=0, column=4, padx=5, sticky="e")
-        ttk.Combobox(parent, textvariable=self.humidity_var, values=choices_humidity, state="readonly").grid(
+        ttk.Combobox(parent, textvariable=self.humidity_var, values=choices_humidity, state="readonly", width=10).grid(
             row=0, column=5, padx=5
         )
 
         ttk.Label(parent, text="Windy:", justify="right").grid(row=0, column=6, padx=5, sticky="e")
-        ttk.Combobox(parent, textvariable=self.windy_var, values=choices_windy, state="readonly").grid(
+        ttk.Combobox(parent, textvariable=self.windy_var, values=choices_windy, state="readonly", width=10).grid(
             row=0, column=7, padx=5
         )
 
