@@ -62,7 +62,12 @@ The modules are in the [modules](src/modules) directory, including the
 
 ## Build
 
-Make sure you have the development dependencies installed.
+Make sure you have the development dependencies installed:
+
+```
+uv sync --dev
+```
+
 Run the following command to build the application:
 
 ```bash
