@@ -1,26 +1,15 @@
-from typing import TYPE_CHECKING, Any, Optional
-import tkinter.ttk as ttk
+from typing import TYPE_CHECKING
 import tkinter as tk
 import tkinter.messagebox as msgbox
 import matplotlib.pyplot as plt  # type: ignore
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg  # type: ignore
-import numpy as np
-from sklearn.datasets import load_iris  # type: ignore
-from sklearn.decomposition import PCA  # type: ignore
-import matplotlib.patches as patches  # type: ignore
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.patches import Rectangle, FancyArrowPatch
-from tkinter import messagebox as msgbox
+from matplotlib.patches import Rectangle
 
 from common.module import Module
 from .lst import Aktivnost, Planer, find_next_available_time
 
 if TYPE_CHECKING:
     from common.app import App
-    from matplotlib.figure import Figure
-    from matplotlib.axes import Axes
-    from matplotlib.collections import PathCollection
 
 
 instructions = """
