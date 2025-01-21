@@ -8,6 +8,7 @@ This repository contains a collection of interactive visualizations for various 
 - [D-Separation](src/modules/d_separation): Interactive visualization of d-separation: Graph visualization where you can select two nodes. The program then displays (colors, highlights) all sets of nodes that d-separate these two nodes.
 - [KNN](src/modules/knn): KNN visualization that plots data in 2D (point cloud) and for a selected test case and k parameter value shows the nearest neighbors and predicted class.
 - [Alpha-Beta Pruning](src/modules/ab_pruning): Visualize the alpha-beta pruning algorithm on a game tree.
+- [LST Scheduling](src/modules/lst_scheduling): Visualize the LST scheduling algorithm.
 
 ## Setup
 
