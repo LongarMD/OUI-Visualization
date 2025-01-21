@@ -3,7 +3,6 @@ import tkinter.ttk as ttk
 from typing import TYPE_CHECKING, List, Type
 
 from modules.ab_pruning.module import AB_Pruning
-from modules.ao_star.module import AO_Star
 from modules.d_separation.module import D_Separation
 from modules.knn.module import KNN
 from modules.nomogram.module import Nomogram
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
     from common.app import App
 
 
-MODULES: List[Type[Module]] = [AB_Pruning, AO_Star, D_Separation, KNN, Nomogram]
+MODULES: List[Type[Module]] = [AB_Pruning, D_Separation, KNN, Nomogram]
 
 category_names = {
     "machine_learning": "Machine Learning",
