@@ -2,8 +2,7 @@ import os
 import sys
 import tkinter as tk
 import tkinter.ttk as ttk
-import sv_ttk  # type: ignore
-from modules.main_menu import MainMenu, MODULES
+from modules.main_menu import MODULES_BY_CATEGORY, MainMenu, category_names
 
 from common.module import Module
 
@@ -45,8 +44,6 @@ class App(tk.Tk):
 
         self._center_window(window_width, window_height)
 
-        sv_ttk.set_theme("light")  # darkdetect.theme()
-
         self._create_menubar()
         self.show_module(MainMenu)
 
@@ -85,18 +82,22 @@ class App(tk.Tk):
         modules_menu = tk.Menu(menubar, tearoff=False)
         modules_menu.add_command(label=MainMenu.__label__, command=lambda: self.show_module(MainMenu))
         modules_menu.add_separator()
-        for module in MODULES:
-            modules_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))  # type: ignore
+        for key, items in MODULES_BY_CATEGORY.items():
+            if not len(items):
+                continue
+            # Create submenu for category
+            category_menu = tk.Menu(modules_menu, tearoff=False)
+            for module in items:
+                category_menu.add_command(label=module.__label__, command=lambda m=module: self.show_module(m))  # type: ignore
+            modules_menu.add_cascade(label=category_names[key], menu=category_menu)
+
         menubar.add_cascade(label="Menu", menu=modules_menu)
 
         # Create "Options" menu
         options_menu = tk.Menu(menubar, tearoff=False)
-        # options_menu.add_command(label=Toggle Theme", command=sv_ttk.toggle_theme)
         options_menu.add_command(label="Help", command=self.show_help)
         options_menu.add_command(label="Exit", command=self.quit)
         menubar.add_cascade(label="Options", menu=options_menu)
-
-        # Help menu
 
         self.config(menu=menubar)
 

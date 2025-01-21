@@ -21,6 +21,12 @@ category_names = {
     "reasoning": "Reasoning",
 }
 
+MODULES_BY_CATEGORY = {}
+for module in MODULES:
+    if module.__category_key__ not in MODULES_BY_CATEGORY:
+        MODULES_BY_CATEGORY[module.__category_key__] = []
+    MODULES_BY_CATEGORY[module.__category_key__].append(module)
+
 
 class MainMenu(Module):
     __label__ = "Main menu"
