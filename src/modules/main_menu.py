@@ -6,13 +6,13 @@ from modules.ab_pruning.module import AB_Pruning
 from modules.d_separation.module import D_Separation
 from modules.knn.module import KNN
 from modules.nomogram.module import Nomogram
-
+from modules.lst_scheduling.module import LST_Scheduling
 
 if TYPE_CHECKING:
     from common.app import App
 
 
-MODULES: List[Type[Module]] = [AB_Pruning, D_Separation, KNN, Nomogram]
+MODULES: List[Type[Module]] = [AB_Pruning, D_Separation, KNN, Nomogram, LST_Scheduling]
 
 category_names = {
     "machine_learning": "Machine Learning",
