@@ -1,3 +1,5 @@
+import os
+import sys
 import tkinter as tk
 import tkinter.ttk as ttk
 import sv_ttk  # type: ignore
@@ -35,7 +37,7 @@ class App(tk.Tk):
         super().__init__()
         self.title("Visualizations")
 
-        self.iconphoto(True, tk.PhotoImage(file="assets/favicon.png"))
+        self.iconphoto(True, tk.PhotoImage(file=self.get_resource_path("assets/favicon.png")))
 
         window_width, window_height = DEFAULT_WINDOW_SIZE
         self.geometry(f"{window_width}x{window_height}")
@@ -235,3 +237,14 @@ class App(tk.Tk):
             scrollbar.pack_forget()
         else:
             scrollbar.pack(side="right", fill="y")
+
+    @staticmethod
+    def get_resource_path(relative_path: str) -> str:
+        """Get the absolute path to a resource, works for dev and for PyInstaller"""
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS  # type: ignore
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)

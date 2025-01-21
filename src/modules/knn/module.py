@@ -93,16 +93,16 @@ class KNN(Module):
         data = np.array([]).reshape(0, n_components)
         data = np.vstack([data, X_2d])
 
-        np.savetxt("assets/knn/iris_2d.txt", data)
-        np.savetxt("assets/knn/iris_labels.txt", y)
+        np.savetxt(self.app.get_resource_path("assets/knn/iris_2d.txt"), data)
+        np.savetxt(self.app.get_resource_path("assets/knn/iris_labels.txt"), y)
 
         self.data = data
         self.labels = y
 
     def _load_data(self) -> None:
         """Load the data for the module."""
-        self.data = np.loadtxt("assets/knn/iris_2d.txt")
-        self.labels = np.loadtxt("assets/knn/iris_labels.txt")
+        self.data = np.loadtxt(self.app.get_resource_path("assets/knn/iris_2d.txt")).astype(float)
+        self.labels = np.loadtxt(self.app.get_resource_path("assets/knn/iris_labels.txt")).astype(int)
 
     def destroy(self) -> None:
         """Clean up resources when the module is destroyed."""
