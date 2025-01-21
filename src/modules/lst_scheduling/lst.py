@@ -285,3 +285,40 @@ class Planer:
         ax.axis("off")  # Turn off the axis
         ax.set_title("Vizualizacija urnika z minimalno časovno rezervo")
         canvas.draw()
+
+
+def find_next_available_time(resource_availability, required_resources, duration, es):
+    earliest_start_time = es
+
+    while True:
+        all_resources_available = True
+
+        # Check availability for each resource
+        for res in required_resources:
+            intervals = resource_availability[res]
+            # Sort intervals by start time
+            intervals.sort(key=lambda x: x[0])
+
+            resource_free = True
+
+            # Check if the resource is free in the current time slot
+            for start, end in intervals:
+                if start <= earliest_start_time < end:
+                    print("Resource {} is busy in the time slot [{}, {}]".format(res, start, end))
+                    # The resource is busy in this slot, move to the end of this busy period
+                    earliest_start_time = end
+                    resource_free = False
+                    break
+                elif earliest_start_time < start and earliest_start_time + duration > start:
+                    # The current slot is free, but the activity will overlap with the next busy period
+                    earliest_start_time = end
+                    resource_free = False
+                    break
+
+            if not resource_free:
+                all_resources_available = False
+                break
+
+        # If all resources are available, return this time slot
+        if all_resources_available:
+            return earliest_start_time

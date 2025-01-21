@@ -447,6 +447,7 @@ def next_step():
             activity_with_smallest_slack.resursi.keys()
         )  # pogledamo katere vse resurse potrebuje aktivnost
         start_time = find_next_available_time(
+            resource_availability,
             required_resources,
             activity_with_smallest_slack.trajanje,
             activity_with_smallest_slack.es,
@@ -481,8 +482,7 @@ def next_step():
     new_canvas.draw()
 
 
-def find_next_available_time(required_resources, duration, es):
-    global resource_availability
+def find_next_available_time(resource_availability, required_resources, duration, es):
     earliest_start_time = es
 
     while True:
