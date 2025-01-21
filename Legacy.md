@@ -30,7 +30,7 @@
   - heavy preprocessing, before the UI even opens
   - does not exit after closing the window, requires a force quit
 
-- [ ] AO => to legacy
+- [x] AO => to legacy
 
   - uses tkinter
   - works
@@ -47,13 +47,13 @@
   - works
   - no example input
 
-- [ ] Planiranje => to legacy
+- [x] Planiranje => to legacy
 
   - uses **pygame**
   - works
   - throws error when moving blocks
 
-- [ ] _Rezanje_ => Remove
+- [x] _Rezanje_ => Remove
   - uses tkinter
   - **does not work**
   - made for cli, gui ("TODO: počasno")
