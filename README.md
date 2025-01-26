@@ -36,7 +36,7 @@ The core of the application is in the [common](src/common) directory:
 
 The modules are in the [modules](src/modules) directory, including the
 
-- [MainMenu](src/common/main_menu.py) class is the main menu for the application.
+- [MainMenu](src/modules/main_menu.py) class is the main menu for the application.
 
 ### Adding a new module
 
@@ -47,8 +47,8 @@ The modules are in the [modules](src/modules) directory, including the
    - The **label** attribute, which is the name of the module that will be displayed in the menu.
    - The **instructions** attribute, which is the instructions for the module that will be displayed in the help window.
    - The **short_description** attribute, which is the short description of the module that will be displayed in the menu.
-   - The **category_key** attribute, which is the category key of the module. Module keys are defined in [Module](src/common/module.py), and used in the main menu to group modules.
-4. Add the new module to the [MainMenu](src/common/main_menu.py)'s MODULES list.
+   - The **category_key** attribute, which is the category key of the module. Module keys are defined in [MainMenu](src/modules/main_menu.py) in the `category_names` dict, and used to group modules.
+4. Add the new module to the [MainMenu](src/modules/main_menu.py)'s MODULES list.
 
 ### Code standard
 
